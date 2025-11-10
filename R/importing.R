@@ -4,6 +4,11 @@
 #' @param path path to gs or GatingML object.
 #' @param type type of object.
 #' @param group_wsp Group of wsp to import.
+#' 
+#' @importFrom CytoML open_flowjo_xml
+#' @importFrom CytoML flowjo_to_gatingset
+#' @importFrom flowWorkspace load_gs
+#' 
 #' @return GatingSet object
 #' @export
 #' @examples 
@@ -13,7 +18,7 @@ import_gating_info<-function(path,type="gs",group_wsp=NULL){
   if(type=="gs"){
     gs<-load_gs(path)
   }else if(type=="ws"){
-    ws<-CytoML::open_flowjo_xml(path)
+    ws<-open_flowjo_xml(path)
     gs<-flowjo_to_gatingset(ws,name=group_wsp)
   }
   return(gs)
@@ -24,6 +29,11 @@ import_gating_info<-function(path,type="gs",group_wsp=NULL){
 #' function to import plain gold standards data (no hierarchy)
 #' @param path_results path to directory containing the csv files  to read (with third column of labels).
 #' @param n_cores Number of cores to use. Default to 1.
+#' 
+#' @importFrom parallel mclapply
+#' @importFrom utils read.csv
+#' 
+#' 
 #' @return list of dataframes
 #' @export
 #' @examples 
@@ -35,7 +45,7 @@ import_reference_csv<-function(path_results,n_cores=1){
   path_data_expr<-list.files(path = path_results,full.names = T,recursive = F)
   
   names_plot<-list.files(path = path_results,full.names = F,recursive = F)
-  list_data_plot<-parallel::mclapply(names_plot,function(n){
+  list_data_plot<-mclapply(names_plot,function(n){
       ind_expr<-grep(n,path_data_expr,fixed=T)
       path_n_expr<-path_data_expr[ind_expr]
       data_plot<-read.csv(path_n_expr,check.names = F)
@@ -58,6 +68,10 @@ import_reference_csv<-function(path_results,n_cores=1){
 #' @param path path of directory containig the fcs files.
 #' @param n_samples Number of samples. Default to All.
 #' @param ref_f_n Set reference flowFrame to match channel names. Default to 1(first flowFrame).
+#' 
+#' @importFrom flowCore read.FCS 
+#' @importFrom methods as
+#' 
 #' @return flowSet.
 #' @export
 #' @examples 
@@ -109,6 +123,10 @@ import_test_set_fcs<-function(path,n_samples="All",ref_f_n=1){
 #' @param path_data path to directory containing csv files to read (third column is ignored).
 #' @param n_cores Number cores. Default to 1.
 #' @param xy_col Colnames equal to x and y. Default to True.
+#' 
+#' @importFrom parallel mclapply
+#' @importFrom utils read.csv
+#' 
 #' @return List of dataframes.
 #' @export
 #' @examples 
@@ -152,6 +170,12 @@ import_test_set_csv<-function(path_data,n_cores=1,xy_col=T){
 #' @param remove_class Vector of classes to ignore. Default to NULL.
 #' @param normalize_data If True, data is normalized to 0-1 range. Default to True.
 #' @param vec_col vector of columns names if the input dataframes have more than 3 columns. The third column name must always refer to the column with the gate label of each event. Default to NULL.
+#' 
+#' @importFrom parallel mclapply
+#' @importFrom utils read.csv
+#' @importFrom caret createDataPartition
+#' 
+#' 
 #' @return Dataframe.
 #' @export
 #' @examples 
@@ -174,7 +198,7 @@ get_train_data<-function(paths_file=NULL,df_paths=NULL,n_cores=1,prop_down=NULL,
                          "h_peak_m2_3","pos_peak_m2_3","start_peak_m2_3","end_peak_m2_3",
                          "h_peak_m2_4","pos_peak_m2_4","start_peak_m2_4","end_peak_m2_4")
   
-  list_dfs<-parallel::mclapply(1:length(paths_file),function(i){
+  list_dfs<-mclapply(1:length(paths_file),function(i){
     print(sprintf("plot_num:%s",i))
     #print("----- get or import dataframe with classes")
     if(is.list(paths_file)==F && is.null(df_paths)==T){
@@ -216,7 +240,7 @@ get_train_data<-function(paths_file=NULL,df_paths=NULL,n_cores=1,prop_down=NULL,
       }
     }
     # downsample df
-    out_part<-caret::createDataPartition(y=factor(df[,"classes"]),times = 1,p = prop_down)
+    out_part<-createDataPartition(y=factor(df[,"classes"]),times = 1,p = prop_down)
     df<-df[out_part$Resample1,]
     # remove some classes if needed
     if(is.null(remove_class)==F){

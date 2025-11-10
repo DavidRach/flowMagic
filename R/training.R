@@ -6,6 +6,9 @@
 #' @param train_model Type of training model. Default to random forest ("rf").
 #' @param method_control Cross-validation method. Default to out-of-the-bag method (oob).
 #' @param n_cores Number of cores to use. Default to 1.
+#' 
+#' @importFrom utils tail
+#' 
 #' @return List of models objects.
 #' @export
 #' @examples 
@@ -83,6 +86,10 @@ magicTrain_hierarchy<-function(list_train_sets,n_tree=10,train_model="rf",method
 #' @param method_control Type of training control: oob or cv or auto. Default to auto.
 #' @param type_y Type of response variable: classes (train to predict gates boundaries) or n_gates_info(train to predict number of gates).
 #' @param seed_n Set seed. Default to 40.
+#' 
+#' @importFrom parallel makePSOCKcluster stopCluster
+#' @importFrom doParallel registerDoParallel
+#' 
 #' @return model object.
 #' @export
 #' @examples 
@@ -114,8 +121,8 @@ magicTrain<-function(df_train,n_cores=1,train_model="rf",k_cv=10,
   }
 
   if(method_control != "oob"){
-    cl <- parallel::makePSOCKcluster(n_cores)
-    doParallel::registerDoParallel(cl)
+    cl <- makePSOCKcluster(n_cores)
+    registerDoParallel(cl)
     # the oob method cannot benefit from parallelization
   }
   set.seed(seed_n)
@@ -133,7 +140,7 @@ magicTrain<-function(df_train,n_cores=1,train_model="rf",k_cv=10,
                                decay = decay_nnet)
   }
   if(exists("cl")){
-    parallel::stopCluster(cl)
+   stopCluster(cl)
   }
   end<-Sys.time()
   time_taken<-end-start
@@ -154,6 +161,9 @@ magicTrain<-function(df_train,n_cores=1,train_model="rf",k_cv=10,
 #' @param list_index_val  List of vector of indices to use as held out data for each fold.
 #' @param size  Number of units in hidden layer (if train_model=nnet).
 #' @param decay  Decay parameter value for nnet model.
+#' @param tune_lenght TODOLIST
+#' 
+#' @importFrom caret train trainControl
 #' @return model object.
 #' @export
 #' @examples 
@@ -167,15 +177,15 @@ magicTrain_nnet<-function(Xtrain,Ytrain,k_cv=10,list_index_train=NULL,list_index
   #----- train model
   print("--- train model")
   if(is.null(list_index_train)==T){
-    model_nnet <- caret::train(
+    model_nnet <- train(
       x=Xtrain, y=Ytrain, method = "nnet",
       tuneGrid = nnGrid,MaxNWts=9000,
-      trControl = caret::trainControl(method = "cv",number = k_cv,trim = T,returnData = F)
+      trControl = trainControl(method = "cv",number = k_cv,trim = T,returnData = F)
     )
   }else{
-    model_nnet <- caret::train(
+    model_nnet <- train(
       x=Xtrain, y=Ytrain, method = "nnet",MaxNWts=9000,
-      trControl = caret::trainControl(trim = T,returnData = F,index = list_index_train,indexOut = list_index_val),
+      trControl = trainControl(trim = T,returnData = F,index = list_index_train,indexOut = list_index_val),
       tuneLength = tune_lenght
     )
   }
@@ -194,6 +204,9 @@ magicTrain_nnet<-function(Xtrain,Ytrain,k_cv=10,list_index_train=NULL,list_index
 #' @param list_index_val  List of vector of indices to use as held out data for each fold.
 #' @param n_tree  Number of trees for random forest.
 #' @param method_control Type of training control: oob or cv. Default to oob. 
+#' 
+#' @importFrom caret train trainControl
+#' 
 #' @return model object.
 #' @export
 #' @examples 
@@ -206,23 +219,23 @@ magicTrain_rf<-function(Xtrain,Ytrain,list_index_train=NULL,list_index_val=NULL,
   print("--- train model")
   if(is.null(list_index_train)==T){
     if(method_control=="oob"){
-      model_rf <- caret::train(
+      model_rf <- train(
         x=Xtrain, y=Ytrain, method = "rf",metric = "Accuracy",ntree=n_tree,
-        trControl = caret::trainControl(method = "oob", trim = T,returnData = F),
+        trControl = trainControl(method = "oob", trim = T,returnData = F),
         tuneGrid = repGrid
       )
     }else if(method_control=="cv"){
-      model_rf <- caret::train(
+      model_rf <- train(
         x=Xtrain, y=Ytrain, method = "rf",metric = "Accuracy",ntree=n_tree,
-        trControl = caret::trainControl(method = "cv",number = k_cv,trim = T,returnData = F),
+        trControl = trainControl(method = "cv",number = k_cv,trim = T,returnData = F),
         tuneGrid = repGrid
       )
     }
 
   }else{
-    model_rf <- caret::train(
+    model_rf <- train(
       x=Xtrain, y=Ytrain, method = "rf",metric = "Accuracy",ntree=n_tree,
-      trControl = caret::trainControl(trim = T,returnData = F,index = list_index_train,indexOut = list_index_val),
+      trControl = trainControl(trim = T,returnData = F,index = list_index_train,indexOut = list_index_val),
       tuneGrid = repGrid
     )
   }
@@ -240,6 +253,9 @@ magicTrain_rf<-function(Xtrain,Ytrain,list_index_train=NULL,list_index_val=NULL,
 #' @param list_index_train  List of vector of indices to use in training for each fold.
 #' @param list_index_val  List of vector of indices to use as held out data for each fold.
 #' @param tune_lenght  Number of hyper parameters to test. Default to 5.
+#' 
+#' @importFrom caret train trainControl
+#' 
 #' @return model object.
 #' @export
 #' @examples 
@@ -251,15 +267,15 @@ magicTrain_knn<-function(Xtrain,Ytrain,k_cv=10,list_index_train=NULL,list_index_
   #----- train model
   if(is.null(list_index_train)==T){
     print("--- train model")
-    model_nb <- caret::train(
+    model_nb <- train(
       x=Xtrain, y=Ytrain, method = "knn",
-      trControl = caret::trainControl(method = "cv",number = k_cv, trim = T)
+      trControl = trainControl(method = "cv",number = k_cv, trim = T)
     )
   }else{
     print("--- train model")
-    model_nb <- caret::train(
+    model_nb <- train(
       x=Xtrain, y=Ytrain, method = "knn",
-      trControl = caret::trainControl(trim = T,returnData = F,index = list_index_train,indexOut = list_index_val),
+      trControl = trainControl(trim = T,returnData = F,index = list_index_train,indexOut = list_index_val),
       tuneLength = tune_lenght
     )
   }
@@ -276,6 +292,9 @@ magicTrain_knn<-function(Xtrain,Ytrain,k_cv=10,list_index_train=NULL,list_index_
 #' @param list_index_train  List of vector of indices to use in training for each fold.
 #' @param list_index_val  List of vector of indices to use as held out data for each fold.
 #' @param tune_lenght  Number of hyper parameters to test. Default to 5.
+#' 
+#' @importFrom caret train trainControl
+#' 
 #' @return model object.
 #' @export
 #' @examples 
@@ -286,15 +305,15 @@ magicTrain_nb<-function(Xtrain,Ytrain,k_cv=10,list_index_train=NULL,list_index_v
   #----- train model
   if(is.null(list_index_train)==T){
     print("--- train model")
-    model_nb <- caret::train(
+    model_nb <- train(
       x=Xtrain, y=Ytrain, method = "nb",
-      trControl = caret::trainControl(method = "cv",number = k_cv, trim = T)
+      trControl = trainControl(method = "cv",number = k_cv, trim = T)
     )
   }else{
     print("--- train model")
-    model_nb <- caret::train(
+    model_nb <- train(
       x=Xtrain, y=Ytrain, method = "nb",
-      trControl = caret::trainControl(trim = T,returnData = F,index = list_index_train,indexOut = list_index_val),
+      trControl = trainControl(trim = T,returnData = F,index = list_index_train,indexOut = list_index_val),
       tuneLength = tune_lenght
     )
   }
@@ -311,6 +330,9 @@ magicTrain_nb<-function(Xtrain,Ytrain,k_cv=10,list_index_train=NULL,list_index_v
 #' @param list_index_train  List of vector of indices to use in training for each fold.
 #' @param list_index_val  List of vector of indices to use as held out data for each fold.
 #' @param tune_lenght  Number of hyper parameters to test. Default to 5.
+#' 
+#' @importFrom caret train trainControl
+#' 
 #' @return model object.
 #' @export
 #' @examples 
@@ -321,16 +343,16 @@ magicTrain_dt<-function(Xtrain,Ytrain,k_cv=10,list_index_train=NULL,list_index_v
   #----- train model
   print("--- train model")
   if(is.null(list_index_train)==T){
-    model_dt <- caret::train(
+    model_dt <- train(
       x=Xtrain, y=Ytrain, method = "rpart",
-      trControl = caret::trainControl(method = "cv",number = k_cv, trim = T,returnData = F),
+      trControl =trainControl(method = "cv",number = k_cv, trim = T,returnData = F),
       tuneLength = tune_lenght,
       parms=list(split="information")
     )
   }else{
-    model_dt <- caret::train(
+    model_dt <- train(
       x=Xtrain, y=Ytrain, method = "rpart",
-      trControl = caret::trainControl(trim = T,returnData = F,index = list_index_train,indexOut = list_index_val),
+      trControl = trainControl(trim = T,returnData = F,index = list_index_train,indexOut = list_index_val),
       tuneLength = tune_lenght,
       parms=list(split="information")
     )

@@ -16,6 +16,13 @@
 #' @param size_axis_text Size of ticks labels.
 #' @param export_csv Export plot data as csv files. Default to False.
 #' @param side_by_side Arrange dens plot and ML plot side-by-side. Default to False.
+#' 
+#' @importFrom parallel mclapply
+#' @importFrom stringr str_remove
+#' @importFrom utils write.csv
+#' @importFrom ggplot2 ggsave
+#' 
+#' 
 #' @return NULL
 #' @export
 #' @examples 
@@ -29,10 +36,10 @@ exports_plots<-function(list_gated_data,path_output,n_cores=1,type_plot="dens",s
   start<-Sys.time()
   all_names<-names(list_gated_data)
  if(export_csv==T){
-    list_n_gates_all_data <- parallel::mclapply(1:length(list_gated_data), 
+    list_n_gates_all_data <- mclapply(1:length(list_gated_data), 
                                       function(i) {
                                         name_current_file <- all_names[i]
-                                        name_current_file <- stringr::str_remove(name_current_file, 
+                                        name_current_file <- str_remove(name_current_file, 
                                                                         ".csv")
                                         print(name_current_file)
                                         if ("df_test_original" %in% names(list_gated_data[[i]])) {
@@ -51,10 +58,10 @@ exports_plots<-function(list_gated_data,path_output,n_cores=1,type_plot="dens",s
                                       }, mc.cores = n_cores)
     
   }else{
-    list_n_gates_all_data <- parallel::mclapply(1:length(list_gated_data), 
+    list_n_gates_all_data <- mclapply(1:length(list_gated_data), 
                                       function(i) {
                                         name_current_file <- all_names[i]
-                                        name_current_file <- stringr::str_remove(name_current_file, 
+                                        name_current_file <- str_remove(name_current_file, 
                                                                         ".csv")
                                         print(name_current_file)
                                         if ("df_test_original" %in% names(list_gated_data[[i]])) {
@@ -82,7 +89,7 @@ exports_plots<-function(list_gated_data,path_output,n_cores=1,type_plot="dens",s
                                               stop("The 'patchwork' package is required for side by side export. Please install it.")
                                             }
                                             if (!"package:patchwork" %in% search()){
-                                              library(patchwork)
+                                              #library(patchwork)
                                             }
                                             plot_dens<-magicPlot(df_p, type = "dens",...)
                                             plot_ml<-magicPlot(df_p, type = "ML",...)
@@ -117,6 +124,15 @@ exports_plots<-function(list_gated_data,path_output,n_cores=1,type_plot="dens",s
 #' @param h_val height value. Default to 7 inches.
 #' @param size_points Size points scatter plot.
 #' @param return_data  If TRUE, return the list of dataframes used to generate the plots. Default to FALSE.
+#' @param node_name TODOLIST
+#' @param channel_x TODOLIST
+#' @param channel_y TODOLIST
+#' 
+#' @importFrom parallel mclapply
+#' @importFrom flowCore sampleNames
+#' @importFrom flowWorkspace gh_pop_get_data
+#' @importFrom ggplot2 ggsave
+#' 
 #' @return NULL
 #' @export
 #' @examples 
@@ -127,7 +143,7 @@ export_raw_gs_plots<-function(gs,node_name,channel_x,channel_y,path_output,n_cor
   start <- Sys.time()
   samples_names <- sampleNames(gs)
  if(return_data==T){
-    list_n_gates_all_data <- parallel::mclapply(1:length(samples_names), 
+    list_n_gates_all_data <- mclapply(1:length(samples_names), 
                                       function(i) {
                                         s <- samples_names[i]
                                         print(s)
@@ -142,7 +158,7 @@ export_raw_gs_plots<-function(gs,node_name,channel_x,channel_y,path_output,n_cor
     names(list_n_gates_all_data)<-samples_names
     return(list_n_gates_all_data)
   }else{
-    list_n_gates_all_data <- parallel::mclapply(1:length(samples_names), 
+    list_n_gates_all_data <- mclapply(1:length(samples_names), 
                                       function(i) {
                                         s <- samples_names[i]
                                         print(s)

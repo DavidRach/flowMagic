@@ -7,6 +7,9 @@
 #' @param list_models_local contains the optimized local models pre-generated using the magicTrain_local function.
 #' @param df_tree contains the info related to the populations hierarchy.
 #' @param n_cores Number of cores to use. Default to 1.
+#' 
+#' @importFrom parallel mclapply
+#' 
 #' @return List of Dataframes.
 #' @export
 #' @examples 
@@ -182,6 +185,8 @@ magicPred_hierarchy<-function(list_test_sets,list_models_local,df_tree,n_cores=1
 #' @param n_points_per_plot Number of points to consider for downsampling. Default to 500.
 #' @param normalize_data If True, data is normalized to 0-1 range. Default to True.
 #' @param include_zero_val considering events labeled as 0 as an additional gate when there is only one gate. Default to  True.
+#' @param thr_dist TODOLIST
+#' 
 #' @return List of Dataframes.
 #' @export
 #' @examples 
@@ -214,7 +219,7 @@ magicPred<-function(test_data,magic_model=NULL,magic_model_n_gates=NULL,ref_mode
       }
       message("Using list of general models and n_gates model")
       #---- list of models and n_gates model
-      if(class(magic_model_n_gates)=="train"){
+      if(inherits(magic_model_n_gates, "train")){
         n_gates<-caret::predict.train(magic_model_n_gates,Xtest)
         inds_max_gates<-which.max(table(n_gates))
         max_gate<-names(table(n_gates))[inds_max_gates]
@@ -338,6 +343,11 @@ magicPred<-function(test_data,magic_model=NULL,magic_model_n_gates=NULL,ref_mode
 #' @param include_zero_val considering events labeled as 0 as an additional gate when there is only one gate. Default to  True.
 #' @param n_cores_all Number of cores to use across all samples. Default to 1.
 #' @param verbose If True, print all message and disable tryCatch (any error will stop the execution). Default to False.
+#' @param prop_down TODOLIST
+#' @param thr_dist TODOLIST
+#' 
+#' @importFrom parallel mclapply
+#' 
 #' @return List of Dataframes.
 #' @export
 #' @examples 
@@ -347,14 +357,14 @@ magicPred_all<-function(list_test_data,magic_model=NULL,ref_model_info=NULL,magi
                         ref_data_train=NULL,prop_down=NULL,n_points_per_plot=NULL,
                         thr_dist=0.05,n_cores=1,normalize_data=T,include_zero_val=T,n_cores_all=1,verbose=F,...){
   if (("package:dplyr" %in% search())==F) {
-  library(dplyr)
+  #library(dplyr)
   }                      
   set.seed(40)
   start<-Sys.time()
   all_names_test_data<-names(list_test_data)
   # prediction for each test data
   message("------------- Prediction for each test data")
-  list_all_dfs_pred<-parallel::mclapply(1:length(list_test_data),function(i){
+  list_all_dfs_pred<-mclapply(1:length(list_test_data),function(i){
     message(sprintf("########### %s ##########",all_names_test_data[i]))
     df_test<-list_test_data[[i]]
     if(verbose==T){

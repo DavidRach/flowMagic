@@ -30,6 +30,8 @@ post_process_gates(
 \item{type}{Type of post-processing.}
 
 \item{concavity_val}{Concavity of polygons for the "polygon" type of post-processing}
+
+\item{normalize_data}{TODOLIST}
 }
 \value{
 Dataframe.

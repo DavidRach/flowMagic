@@ -34,6 +34,8 @@ magicPred(
 
 \item{prop_down}{Proportion for downsampling. Default to NULL (automatic downsampling using n_points_per_plot).}
 
+\item{thr_dist}{TODOLIST}
+
 \item{n_points_per_plot}{Number of points to consider for downsampling. Default to 500.}
 
 \item{normalize_data}{If True, data is normalized to 0-1 range. Default to True.}

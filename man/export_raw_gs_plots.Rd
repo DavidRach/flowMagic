@@ -23,6 +23,12 @@ export_raw_gs_plots(
 \arguments{
 \item{gs}{GatingSet}
 
+\item{node_name}{TODOLIST}
+
+\item{channel_x}{TODOLIST}
+
+\item{channel_y}{TODOLIST}
+
 \item{path_output}{Path to the directory where to export the plots.}
 
 \item{n_cores}{Number of cores to use. Default to 1.}

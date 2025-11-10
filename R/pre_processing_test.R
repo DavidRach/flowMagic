@@ -8,6 +8,9 @@
 #' Each dataframe is the expression matrix of the root.
 #' @param fs flowSet to gate.
 #' @param gh Gating hierarchy.
+#' 
+#' @importFrom flowWorkspace gh_pop_get_data
+#' 
 #' @return List of dataframes.
 #' @export
 #' @examples 

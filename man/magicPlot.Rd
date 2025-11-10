@@ -57,6 +57,8 @@ magicPlot(
 
 \item{apply_manual_scale}{Apply predifined scale of colors. Default to True.}
 
+\item{hull_only}{TODOLIST}
+
 \item{size_points}{Size of points in scatter plot.}
 
 \item{concavity_val}{Concavity value. Default to 5. Higher value, less jagged boundaries}

@@ -1,0 +1,10 @@
+---
+title: "Documentation"
+format: html
+---
+
+This pdf describes the usage of the main flowMagic functions and reports examples of typical flowMagic scripts. Each
+function usually contains many parameters, only few of them are mentioned in this document. A detailed documentation of
+each parameter for each function can be found on the flowMagic manual.pdf document in the pkg manual github directory.
+
+Rest of the example here....

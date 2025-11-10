@@ -70,6 +70,11 @@ extract_polygon_gates<-function(gated_df,concavity_val=1,...){
 #' 
 #' function to check polygons intersection.
 #' @param list_df_hull List of polygons coordinates
+#' 
+#' @importFrom sp Polygon Polygons SpatialPolygons
+#' @importFrom sf st_as_sf st_intersection st_buffer st_area
+#' @importFrom magrittr %>%
+#' 
 #' @return float
 #' @export
 #' @examples 
@@ -79,9 +84,9 @@ check_polygons_intersection<-function(list_df_hull){
   ######################### convert convex hull in spatial polygon ################
   df_hull<-do.call(rbind,list_df_hull)
   polys <- lapply(unique(df_hull$group_gate), function(i) {
-    sp::Polygons(list(sp::Polygon(df_hull[df_hull$group_gate==i, 1:2])), ID=i)
+    Polygons(list(Polygon(df_hull[df_hull$group_gate==i, 1:2])), ID=i)
   })
-  spa_polys <- sp::SpatialPolygons(polys) # spatial polygons based on a convex hull
+  spa_polys <- SpatialPolygons(polys) # spatial polygons based on a convex hull
   ####################### check final polygons  ntersections ##################
   n_polygons<-length(spa_polys)
   vec_check<-c()
@@ -101,9 +106,9 @@ check_polygons_intersection<-function(list_df_hull){
         message(sprintf("-------- Analysis gate %s vs %s",name_group_poly_i,name_group_poly_j))
         if(name_group_poly_j!=name_group_poly_i){ # avoid comparison with itself
           poly_j<-spa_polys[j]
-          poly_i_sf<-sf::st_as_sf(poly_i)
-          poly_j_sf<-sf::st_as_sf(poly_j)
-          area_intersect<-sf::st_intersection(sf::st_buffer(poly_i_sf, 0), sf::st_buffer(poly_j_sf, 0)) %>% sf::st_area()
+          poly_i_sf<-st_as_sf(poly_i)
+          poly_j_sf<-st_as_sf(poly_j)
+          area_intersect<-st_intersection(st_buffer(poly_i_sf, 0), st_buffer(poly_j_sf, 0)) %>% st_area()
           if(length(area_intersect)==0){
             area_intersect<-0
           }
@@ -124,6 +129,8 @@ check_polygons_intersection<-function(list_df_hull){
 #' @param gated_df dataframe with labels (third column).
 #' @param list_final_polygons_coords List of dataframes containing polygon coordinates.
 #' @param no_classes  Generate third column of labels. Default to False.
+#' 
+#' @importFrom sp point.in.polygon
 #' @return Dataframe.
 #' @export
 #' @examples 
@@ -144,7 +151,7 @@ compute_gates<-function(gated_df,list_final_polygons_coords,no_classes=F){
   for(i in 1:n_polygons){
     class_name<-all_classes_name[i]
     coords_poly_current_class<-list_final_polygons_coords[[i]]
-    vec_out<-sp::point.in.polygon(point.x=gated_df[,1], point.y=gated_df[,2], pol.x=coords_poly_current_class[,1],
+    vec_out<-point.in.polygon(point.x=gated_df[,1], point.y=gated_df[,2], pol.x=coords_poly_current_class[,1],
                               pol.y=coords_poly_current_class[,2], mode.checked=FALSE)
     inds<-which(vec_out!=0)
     gated_df[inds,"classes"]<-class_name
@@ -162,6 +169,8 @@ compute_gates<-function(gated_df,list_final_polygons_coords,no_classes=F){
 #' @param remove_centroids  Remove centroids too near each other based on thr_dist value.
 #' @param type  Type of post-processing.
 #' @param concavity_val  Concavity of polygons for the "polygon" type of post-processing
+#' @param normalize_data TODOLIST
+#' 
 #' @return Dataframe.
 #' @export
 #' @examples 
@@ -209,6 +218,9 @@ post_process_gates<-function(gated_df,n_cores=1,thr_dist=0.15,include_zero=F,rem
 #' @param thr_dist  Distance threshold for centroids calculation. Default to 0.15.
 #' @param include_zero  Consider centroid of label 0. Default to False.
 #' @param remove_centroids  Remove centroids too near each other based on thr_dist value.
+#' 
+#' @importFrom stats dist quantile
+#' 
 #' @return Dataframe.
 #' @export
 #' @examples 
@@ -321,6 +333,10 @@ get_centroids<-function(df,low_thr=0.10,up_thr=0.90,thr_dist=0.15,include_zero=F
 #' @param thr_dist  Distance threshold for centroids calculation. Default to 0.15.
 #' @param include_zero  Consider centroid of label 0. Default to False.
 #' @param remove_centroids  Remove centroids too near each other based on thr_dist value.
+#' 
+#' @importFrom parallel mclapply
+#' @importFrom stats dist
+#' 
 #' @return Dataframe.
 #' @export
 #' @examples 
@@ -330,7 +346,7 @@ get_centroids<-function(df,low_thr=0.10,up_thr=0.90,thr_dist=0.15,include_zero=F
 assign_events_to_nearest_centroids<-function(gated_df,n_cores=1,method_dist="euclidean",thr_dist=0.15,include_zero=F,remove_centroids=T){
   start<-Sys.time()
   df_centroids<-get_centroids(df = gated_df,thr_dist = thr_dist,include_zero = include_zero,remove_centroids = remove_centroids)
-  list_new_classes<-parallel::mclapply(1:nrow(gated_df),function(i){
+  list_new_classes<-mclapply(1:nrow(gated_df),function(i){
     message(i)
     coords_i<-gated_df[i,c(1,2)]
     colnames(coords_i)<-c("coord_1","coord_2")
@@ -370,12 +386,15 @@ assign_events_to_nearest_centroids<-function(gated_df,n_cores=1,method_dist="euc
 #' @param hull_df Dataframe generate by  concaveman functions inside get_huget_hull_all_gates function
 #' @param spar Spar value to regulate smoothing process: higher value (max 1) higher smoothing.
 #' @param buffer_dist Regulate buffer distance before smoothing. Default to 500.
+#' 
+#' @importFrom stats smooth.spline
+#' 
 #' @return Dataframe.
 #' @export
 #' @examples 
 #' \donttest{smooth_hull()} 
 
-smooth_hull <- function(hull_df, spar = 0.7) {
+smooth_hull <- function(hull_df, spar = 0.7, buffer_dist=500) {
   colnames(hull_df) <- c("x", "y")
   # Ensure it's closed loop
   hull_df <- rbind(hull_df, hull_df[1, ])

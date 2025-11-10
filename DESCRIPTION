@@ -1,7 +1,7 @@
 Package: flowMagic
 Type: Package
 Title: Automated gating of flow cytometry data
-Version: 0.99
+Version: 0.99.1
 Authors@R:
     person(given = "Sebastiano",
            family = "Montante",
@@ -15,8 +15,10 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports:
 	caret,
+	geometry,
 	ggplot2,
 	stringr,
+	methods,
 	parallel,
 	randomForest,
 	concaveman,
@@ -31,15 +33,18 @@ Imports:
 	patchwork,
 	ggExtra,
 	RColorBrewer,
-	dplyr
-Suggests:
+Depends:
+	Biobase,
+	CytoML,
 	flowCore,
 	flowWorkspace,
-	Biobase,
-	data.tree,
-	visNetwork,
-	klaR(<= 0.6-12),
-	remotes,
-	CytoML,
-	plotly
-	
+	magrittr,
+	plotly,
+	randomcoloR,
+    data.tree,
+    visNetwork,
+    klaR
+Suggests:
+    remotes,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

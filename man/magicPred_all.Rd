@@ -32,7 +32,11 @@ magicPred_all(
 
 \item{ref_data_train}{Template data used to generate ref_model_info. Needed to calculate target-template distance.}
 
+\item{prop_down}{TODOLIST}
+
 \item{n_points_per_plot}{Number of points to consider for downsampling. Default to 500.}
+
+\item{thr_dist}{TODOLIST}
 
 \item{n_cores}{Number of cores to use to process one sample. Default to 1.}
 

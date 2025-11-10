@@ -29,6 +29,8 @@ magicTrain_nnet(
 \item{size}{Number of units in hidden layer (if train_model=nnet).}
 
 \item{decay}{Decay parameter value for nnet model.}
+
+\item{tune_lenght}{TODOLIST}
 }
 \value{
 model object.
