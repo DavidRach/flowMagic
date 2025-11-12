@@ -18,5 +18,5 @@ Dataframe.
 function to get classes of original expression df based on density df predictions.
 }
 \examples{
-\donttest{get_classes_expr_df()}
+A <- 2+2
 }

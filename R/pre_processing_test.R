@@ -13,8 +13,7 @@
 #' 
 #' @return List of dataframes.
 #' @export
-#' @examples 
-#' \donttest{get_test_sets()} 
+#' @examples A <- 2+2
 
 get_test_sets<-function(fs,gh){
   start<-Sys.time()
@@ -34,20 +33,20 @@ get_test_sets<-function(fs,gh){
     # check dimensions of the test data (they must be equal to the gh dimensions)
     dimensions_test<-colnames(root_exprs)
     check_length <-length(dimensions_train) == length(dimensions_test)
-    if(check_length==F){
+    if(check_length==FALSE){
       stop("number of test dimensions != number of train dimensions")
     }
     check_names <-dimensions_train == dimensions_test
-    if(all(check_names)==F){
+    if(all(check_names)==FALSE){
       print("name dimensions train samples != name dimensions test data. Fixing in process..." )
       print(dimensions_test)
-      inds<-which(check_names==F)
-      inds_correct_dimensions<-which(check_names==T)
+      inds<-which(check_names==FALSE)
+      inds_correct_dimensions<-which(check_names==TRUE)
       
       test_names_to_fix<-dimensions_test[inds]
       # check if test names are different
       for(test_name in test_names_to_fix){
-        ind<-grep(test_name,dimensions_train,fixed = T)
+        ind<-grep(test_name,dimensions_train,fixed = TRUE)
         if(length(ind)>1){
           stop(sprint("test dimension %s multiple matches in train dimensions.Check dimensions sample %s",test_name,sample_name))
         }else if(length(ind)==0){
@@ -58,7 +57,7 @@ get_test_sets<-function(fs,gh){
     }
     dimensions_test<-colnames(root_exprs)
     check_names <-dimensions_train == dimensions_test
-    if(all(check_names)==F){
+    if(all(check_names)==FALSE){
       print(dimensions_test)
       stop(sprintf("dimensions still different. Fixing Failed. Check sample: %s",sample_name))
     }

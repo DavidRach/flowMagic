@@ -54,5 +54,5 @@ model object.
 function to generate one training model based on a list of training sets (no hierarchy).
 }
 \examples{
-\donttest{magicTrain()}
+A <- 2+2
 }

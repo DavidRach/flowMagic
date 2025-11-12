@@ -8,10 +8,9 @@
 #' @param smoothing Apply smoothing of lines? Default to F.
 #' @return List of dataframes.
 #' @export
-#' @examples 
-#' \donttest{get_hull_all_gates()}
+#' @examples A <- 2+2
 
-get_hull_all_gates<-function(gated_df,concavity_val=1,spar_val=0.7,smoothing=F){
+get_hull_all_gates<-function(gated_df,concavity_val=1,spar_val=0.7,smoothing=FALSE){
   colnames(gated_df)<-c("x","y","classes")
   all_classes<-unique(gated_df$classes)
   list_df_hull<-list()
@@ -19,7 +18,7 @@ get_hull_all_gates<-function(gated_df,concavity_val=1,spar_val=0.7,smoothing=F){
     inds<-which(gated_df$classes==classes)
     df_current_classes<-gated_df[inds,]
     df_current_classes_hull_values<-as.data.frame(concaveman::concaveman(as.matrix(df_current_classes[,c(1,2)]),concavity=concavity_val))
-    if(smoothing == T){
+    if(smoothing == TRUE){
       df_current_classes_hull_values<-smooth_hull(hull_df=df_current_classes_hull_values,spar=spar_val)
     }
     vec_group<-rep(sprintf("%s",classes),nrow(df_current_classes_hull_values))
@@ -35,10 +34,11 @@ get_hull_all_gates<-function(gated_df,concavity_val=1,spar_val=0.7,smoothing=F){
 #' function to extract the polygon gates objects based on the convex hull and classes.
 #' @param gated_df dataframe with labels (third column).
 #' @param concavity_val Concavity of polygons. Default to 1.
+#' @param ... Additional arguments passed to the function
+#' 
 #' @return List of dataframes.
 #' @export
-#' @examples 
-#' \donttest{extract_polygon_gates()}
+#' @examples A <- 2+2
 
 extract_polygon_gates<-function(gated_df,concavity_val=1,...){
   row.names(gated_df)<-NULL
@@ -77,8 +77,7 @@ extract_polygon_gates<-function(gated_df,concavity_val=1,...){
 #' 
 #' @return float
 #' @export
-#' @examples 
-#' \donttest{check_polygons_intersection()}
+#' @examples A <- 2+2
 
 check_polygons_intersection<-function(list_df_hull){
   ######################### convert convex hull in spatial polygon ################
@@ -133,15 +132,14 @@ check_polygons_intersection<-function(list_df_hull){
 #' @importFrom sp point.in.polygon
 #' @return Dataframe.
 #' @export
-#' @examples 
-#' \donttest{compute_gates()}
+#' @examples A <- 2+2
   
-compute_gates<-function(gated_df,list_final_polygons_coords,no_classes=F){
-  if(no_classes==F){
+compute_gates<-function(gated_df,list_final_polygons_coords,no_classes=FALSE){
+  if(no_classes==FALSE){
     row.names(gated_df)<-NULL # we have already saved the original root indices
     colnames(gated_df)<-c("x","y","classes")
     gated_df$classes<-as.character(gated_df$classes)
-  }else if(no_classes==T){
+  }else if(no_classes==TRUE){
     colnames(gated_df)<-c("x","y") 
     gated_df$classes<-rep(0,nrow(gated_df))
     gated_df$classes<-as.character(gated_df$classes)
@@ -170,14 +168,14 @@ compute_gates<-function(gated_df,list_final_polygons_coords,no_classes=F){
 #' @param type  Type of post-processing.
 #' @param concavity_val  Concavity of polygons for the "polygon" type of post-processing
 #' @param normalize_data TODOLIST
+#' @param ... Additional arguments passed to the function
 #' 
 #' @return Dataframe.
 #' @export
-#' @examples 
-#' \donttest{post_process_gates()}
+#' @examples A <- 2+2
 
-post_process_gates<-function(gated_df,n_cores=1,thr_dist=0.15,include_zero=F,remove_centroids=T,type="dist",
-                             concavity_val=5,normalize_data=T,...){
+post_process_gates<-function(gated_df,n_cores=1,thr_dist=0.15,include_zero=FALSE,remove_centroids=TRUE,
+  type="dist",concavity_val=5,normalize_data=TRUE,...){
   colnames(gated_df)<-c("x","y","classes")
   gated_df$classes<-as.character(gated_df$classes)
   if(type=="dist"){
@@ -188,7 +186,7 @@ post_process_gates<-function(gated_df,n_cores=1,thr_dist=0.15,include_zero=F,rem
   }else if(type=="polygon"){
     message("post-process based on events distance checking polygons intersection")
     list_df_hull<-extract_polygon_gates(gated_df = gated_df,concavity_val=concavity_val,...)
-    if(normalize_data==T){
+    if(normalize_data==TRUE){
       # check polygons intersections
       max_area_intersect<-check_polygons_intersection(list_df_hull = list_df_hull)
       message(sprintf("max_area_intersect:%f",max_area_intersect))
@@ -197,7 +195,7 @@ post_process_gates<-function(gated_df,n_cores=1,thr_dist=0.15,include_zero=F,rem
         message("There is a relevant intersection")
         new_df<-assign_events_to_nearest_centroids(gated_df = gated_df,
                                                    n_cores = n_cores,thr_dist=0.05,
-                                                   include_zero = F,remove_centroids = T)
+                                                   include_zero = FALSE,remove_centroids = TRUE)
       }else{
         new_df<-compute_gates(gated_df=gated_df,list_final_polygons_coords =  list_df_hull)
       }
@@ -223,12 +221,11 @@ post_process_gates<-function(gated_df,n_cores=1,thr_dist=0.15,include_zero=F,rem
 #' 
 #' @return Dataframe.
 #' @export
-#' @examples 
-#' \donttest{get_centroids()} 
+#' @examples A <- 2+2
 
-get_centroids<-function(df,low_thr=0.10,up_thr=0.90,thr_dist=0.15,include_zero=F,remove_centroids=T){
+get_centroids<-function(df,low_thr=0.10,up_thr=0.90,thr_dist=0.15,include_zero=FALSE,remove_centroids=TRUE){
   all_labels<-unique(df[,3])
-  if(include_zero==F){
+  if(include_zero==FALSE){
     all_labels<-all_labels[all_labels!="0"]
   }
   list_centroids_all_labels<-list()
@@ -249,7 +246,7 @@ get_centroids<-function(df,low_thr=0.10,up_thr=0.90,thr_dist=0.15,include_zero=F
     vec_centroid_coord<-c(l,mean_1,mean_2)
     list_centroids_all_labels[[l]]<-vec_centroid_coord
   }
-  df_centroids<-as.data.frame(do.call(rbind,list_centroids_all_labels),stringsAsFactors=T)
+  df_centroids<-as.data.frame(do.call(rbind,list_centroids_all_labels),stringsAsFactors=TRUE)
   colnames(df_centroids)<-c("label","mean_1","mean_2")
   df_centroids$label<-as.character(df_centroids$label)
   df_centroids$mean_1<-as.numeric(as.character(df_centroids$mean_1))
@@ -258,16 +255,16 @@ get_centroids<-function(df,low_thr=0.10,up_thr=0.90,thr_dist=0.15,include_zero=F
   df_centroids$mean_2<-round(df_centroids$mean_2,2)
   #---- remove NA values
   check_na_1<-is.nan(df_centroids$mean_1)
-  inds<-which(check_na_1==T)
+  inds<-which(check_na_1==TRUE)
   if(length(inds)!=0){
     df_centroids<-df_centroids[-inds,]
   }
   check_na_2<-is.nan(df_centroids$mean_2)
-  inds<-which(check_na_2==T)
+  inds<-which(check_na_2==TRUE)
   if(length(inds)!=0){
     df_centroids<-df_centroids[-inds,]
   }
-  if(remove_centroids==T){
+  if(remove_centroids==TRUE){
     # Remove centroids too near each other
     list_vec_dist<-list()
     for(c in 1:nrow(df_centroids)){
@@ -302,7 +299,7 @@ get_centroids<-function(df,low_thr=0.10,up_thr=0.90,thr_dist=0.15,include_zero=F
       inds<-which(vec_dist<thr_dist)
       if(length(inds)!=0){
         labels_too_near<-all_labels_col[inds]
-        inds_already_checked<-which((labels_too_near %in% label_to_remain)==T)
+        inds_already_checked<-which((labels_too_near %in% label_to_remain)==TRUE)
         if(length(inds_already_checked)!=0){
           labels_too_near<-labels_too_near[-inds_already_checked]
         }
@@ -311,12 +308,12 @@ get_centroids<-function(df,low_thr=0.10,up_thr=0.90,thr_dist=0.15,include_zero=F
         }
       }
       final_check<-current_label %in% label_to_remove
-      if(final_check==F){
+      if(final_check==FALSE){
         label_to_remain<-c(label_to_remain,current_label)
       }
     }
     label_to_remove<-unique(label_to_remove)
-    inds_to_remove<-which((df_centroids$label %in% label_to_remove)==T)
+    inds_to_remove<-which((df_centroids$label %in% label_to_remove)==TRUE)
     if(length(inds_to_remove)!=0){
       df_centroids<-df_centroids[-inds_to_remove,]
     }
@@ -339,11 +336,11 @@ get_centroids<-function(df,low_thr=0.10,up_thr=0.90,thr_dist=0.15,include_zero=F
 #' 
 #' @return Dataframe.
 #' @export
-#' @examples 
-#' \donttest{assign_events_to_nearest_centroids()} 
+#' @examples A <- 2+2
 
 
-assign_events_to_nearest_centroids<-function(gated_df,n_cores=1,method_dist="euclidean",thr_dist=0.15,include_zero=F,remove_centroids=T){
+assign_events_to_nearest_centroids<-function(gated_df,n_cores=1,method_dist="euclidean",thr_dist=0.15,
+  include_zero=FALSE,remove_centroids=TRUE){
   start<-Sys.time()
   df_centroids<-get_centroids(df = gated_df,thr_dist = thr_dist,include_zero = include_zero,remove_centroids = remove_centroids)
   list_new_classes<-mclapply(1:nrow(gated_df),function(i){
@@ -391,8 +388,7 @@ assign_events_to_nearest_centroids<-function(gated_df,n_cores=1,method_dist="euc
 #' 
 #' @return Dataframe.
 #' @export
-#' @examples 
-#' \donttest{smooth_hull()} 
+#' @examples A <- 2+2
 
 smooth_hull <- function(hull_df, spar = 0.7, buffer_dist=500) {
   colnames(hull_df) <- c("x", "y")

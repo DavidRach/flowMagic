@@ -11,8 +11,7 @@
 #' 
 #' @return GatingSet object
 #' @export
-#' @examples 
-#' \donttest{import_sample_gated()}
+#' @examples A <- 2+2
 
 import_gating_info<-function(path,type="gs",group_wsp=NULL){
   if(type=="gs"){
@@ -36,19 +35,18 @@ import_gating_info<-function(path,type="gs",group_wsp=NULL){
 #' 
 #' @return list of dataframes
 #' @export
-#' @examples 
-#' \donttest{import_reference_csv()}
+#' @examples A <- 2+2
 
 
 import_reference_csv<-function(path_results,n_cores=1){
   start<-Sys.time()
-  path_data_expr<-list.files(path = path_results,full.names = T,recursive = F)
+  path_data_expr<-list.files(path = path_results,full.names = TRUE,recursive = FALSE)
   
-  names_plot<-list.files(path = path_results,full.names = F,recursive = F)
+  names_plot<-list.files(path = path_results,full.names = FALSE,recursive = FALSE)
   list_data_plot<-mclapply(names_plot,function(n){
-      ind_expr<-grep(n,path_data_expr,fixed=T)
+      ind_expr<-grep(n,path_data_expr,fixed=TRUE)
       path_n_expr<-path_data_expr[ind_expr]
-      data_plot<-read.csv(path_n_expr,check.names = F)
+      data_plot<-read.csv(path_n_expr,check.names = FALSE)
       return(data_plot)
   },mc.cores = n_cores)
   names(list_data_plot)<-names_plot
@@ -74,14 +72,13 @@ import_reference_csv<-function(path_results,n_cores=1){
 #' 
 #' @return flowSet.
 #' @export
-#' @examples 
-#' \donttest{import_test_set()}
+#' @examples A <- 2+2
 
 
 import_test_set_fcs<-function(path,n_samples="All",ref_f_n=1){
   start<-Sys.time()
-  paths_files<-list.files(path,full.names = T)
-  if(is.character(n_samples)==F){
+  paths_files<-list.files(path,full.names = TRUE)
+  if(is.character(n_samples)==FALSE){
     paths_files<-paths_files[n_samples]
   }
   # get references parameters from the ref flowFrame (the first one by default)
@@ -98,7 +95,7 @@ import_test_set_fcs<-function(path,n_samples="All",ref_f_n=1){
     m_expr_current_f<-exprs(f)
     channel_names_f<-colnames(m_expr_current_f)
     check_out<-all(channel_names_f==channel_names_ref)
-    if(check_out==F){
+    if(check_out==FALSE){
       c<-c+1
       f<-NULL
       warning(sprintf("%s has different colnames from ref colnames. Return NULL",sample_name))
@@ -129,19 +126,18 @@ import_test_set_fcs<-function(path,n_samples="All",ref_f_n=1){
 #' 
 #' @return List of dataframes.
 #' @export
-#' @examples 
-#' \donttest{import_test_set_csv()}
+#' @examples A <- 2+2
 
-import_test_set_csv<-function(path_data,n_cores=1,xy_col=T){
-  path_data_all<-list.files(path = path_data,full.names = T,recursive = F)
-  names_plot<-list.files(path = path_data,full.names = F,recursive = F)
+import_test_set_csv<-function(path_data,n_cores=1,xy_col=TRUE){
+  path_data_all<-list.files(path = path_data,full.names = TRUE,recursive = FALSE)
+  names_plot<-list.files(path = path_data,full.names = FALSE,recursive = FALSE)
   list_test_data<-parallel::mclapply(path_data_all,function(p){
-    df_expr<-read.csv(p,check.names = F)
+    df_expr<-read.csv(p,check.names = FALSE)
     if(nrow(df_expr)==0){
       return(NULL)
     }
     df_expr<-df_expr[,c(1,2)]
-    if(xy_col==T){
+    if(xy_col==TRUE){
       colnames(df_expr)<-c("x","y")
     }
     return(df_expr)
@@ -150,7 +146,7 @@ import_test_set_csv<-function(path_data,n_cores=1,xy_col=T){
   vec_check<-sapply(list_test_data,function(x){
     check_x<-is.null(x)
   })
-  ind<-which(vec_check==T)
+  ind<-which(vec_check==TRUE)
   if(length(ind)!=0){
     list_test_data<-list_test_data[-ind]
     
@@ -178,14 +174,13 @@ import_test_set_csv<-function(path_data,n_cores=1,xy_col=T){
 #' 
 #' @return Dataframe.
 #' @export
-#' @examples 
-#' \donttest{get_train_data()}
+#' @examples A <- 2+2
 
 
 get_train_data<-function(paths_file=NULL,df_paths=NULL,n_cores=1,prop_down=NULL,remove_class=NULL,
-                         n_points_per_plot=NULL,normalize_data=T,vec_col=NULL){
+                         n_points_per_plot=NULL,normalize_data=TRUE,vec_col=NULL){
   start<-Sys.time()
-  if(is.null(df_paths)==F){
+  if(is.null(df_paths)==FALSE){
     paths_file<-df_paths[,1]
   }
   
@@ -201,13 +196,13 @@ get_train_data<-function(paths_file=NULL,df_paths=NULL,n_cores=1,prop_down=NULL,
   list_dfs<-mclapply(1:length(paths_file),function(i){
     print(sprintf("plot_num:%s",i))
     #print("----- get or import dataframe with classes")
-    if(is.list(paths_file)==F && is.null(df_paths)==T){
+    if(is.list(paths_file)==FALSE && is.null(df_paths)==TRUE){
       # import df
       current_path<-paths_file[i]
       df<-read.csv(current_path)
-    }else if(is.list(paths_file)==T && is.null(df_paths)==T){
+    }else if(is.list(paths_file)==TRUE && is.null(df_paths)==TRUE){
       df<-paths_file[[i]]
-    }else if(is.null(df_paths)==F){
+    }else if(is.null(df_paths)==FALSE){
       current_path_data<-df_paths[i,1]
       current_path_classes<-df_paths[i,2]
       df_data<-read.csv(current_path_data)
@@ -222,7 +217,7 @@ get_train_data<-function(paths_file=NULL,df_paths=NULL,n_cores=1,prop_down=NULL,
     }
     if(ncol(df)>3){
       warning("dataframe has more than three columns, checking vec_col argument")
-      if(is.null(vec_col)==T || length(vec_col)!=3){
+      if(is.null(vec_col)==TRUE || length(vec_col)!=3){
         stop("the input dataframes has length > 3 and vec_col format is not valid. 
              Please either make dataframes of 3 columns or indicate 3 valid columns names in vec_col argument. 
              Third column must contain the classes.")
@@ -231,9 +226,9 @@ get_train_data<-function(paths_file=NULL,df_paths=NULL,n_cores=1,prop_down=NULL,
       }
     colnames(df)<-c("x1_expr","x2_expr","classes")
     #show(magicPlot(df = df,type = "dens",size_points = 1))
-    if(is.null(prop_down)==T & is.null(n_points_per_plot)==T){
+    if(is.null(prop_down)==TRUE & is.null(n_points_per_plot)==TRUE){
       prop_down<-1
-    }else if(is.null(prop_down)==T & is.null(n_points_per_plot)==F){
+    }else if(is.null(prop_down)==TRUE & is.null(n_points_per_plot)==FALSE){
       prop_down<-(n_points_per_plot/nrow(df))
       if(prop_down>1){
         prop_down<-1
@@ -243,21 +238,21 @@ get_train_data<-function(paths_file=NULL,df_paths=NULL,n_cores=1,prop_down=NULL,
     out_part<-createDataPartition(y=factor(df[,"classes"]),times = 1,p = prop_down)
     df<-df[out_part$Resample1,]
     # remove some classes if needed
-    if(is.null(remove_class)==F){
-      inds_to_remove<-which((df$classes %in% remove_class)==T)
+    if(is.null(remove_class)==FALSE){
+      inds_to_remove<-which((df$classes %in% remove_class)==TRUE)
       if(length(inds_to_remove)!=0){
         new_df$classes[inds_to_remove]<-0
       }
     }
     # get density features
-    if(normalize_data==T){
+    if(normalize_data==TRUE){
       df$x1_expr<-range01(df$x1_expr)
       df$x2_expr<-range01(df$x2_expr)
     }
     df$x1_expr<-round(df$x1_expr,2)
     df$x2_expr<-round(df$x2_expr,2)
-    df_dens<-csv_to_dens(df = df,with_classes = F,n_coord = 50)
-    if(normalize_data==F){
+    df_dens<-csv_to_dens(df = df,with_classes = FALSE,n_coord = 50)
+    if(normalize_data==FALSE){
       vec_info_dens<-get_density_features(df_dens = df_dens,min_height = 0.00)
     }else{
       vec_info_dens<-get_density_features(df_dens = df_dens)

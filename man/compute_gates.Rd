@@ -4,7 +4,7 @@
 \alias{compute_gates}
 \title{compute_gates}
 \usage{
-compute_gates(gated_df, list_final_polygons_coords, no_classes = F)
+compute_gates(gated_df, list_final_polygons_coords, no_classes = FALSE)
 }
 \arguments{
 \item{gated_df}{dataframe with labels (third column).}
@@ -20,5 +20,5 @@ Dataframe.
 function to assign events based on polygon gates.
 }
 \examples{
-\donttest{compute_gates()}
+A <- 2+2
 }

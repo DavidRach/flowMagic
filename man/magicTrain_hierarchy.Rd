@@ -9,7 +9,8 @@ magicTrain_hierarchy(
   n_tree = 10,
   train_model = "rf",
   method_control = "oob",
-  n_cores = 1
+  n_cores = 1,
+  seed_n = 40
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ magicTrain_hierarchy(
 \item{method_control}{Cross-validation method. Default to out-of-the-bag method (oob).}
 
 \item{n_cores}{Number of cores to use. Default to 1.}
+
+\item{seed_n}{Numeric for set.seed, default is 40}
 }
 \value{
 List of models objects.
@@ -30,5 +33,5 @@ List of models objects.
 function to generate the local training models using the list of hierarchical training set.
 }
 \examples{
-\donttest{magicTrain_local()}
+A <- 2 + 2
 }

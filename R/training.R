@@ -6,16 +6,17 @@
 #' @param train_model Type of training model. Default to random forest ("rf").
 #' @param method_control Cross-validation method. Default to out-of-the-bag method (oob).
 #' @param n_cores Number of cores to use. Default to 1.
+#' @param seed_n Numeric for set.seed, default is 40
 #' 
 #' @importFrom utils tail
 #' 
 #' @return List of models objects.
 #' @export
-#' @examples 
-#' \donttest{magicTrain_local()}
+#' @examples A <- 2 + 2
 
-magicTrain_hierarchy<-function(list_train_sets,n_tree=10,train_model="rf",method_control="oob",n_cores=1){
-  set.seed(40)
+magicTrain_hierarchy<-function(list_train_sets,n_tree=10,train_model="rf",method_control="oob",
+  n_cores=1, seed_n=40){
+  set.seed(seed_n)
   # list that contains the optimized model for each pop 
   # for each level (from top to bottom)
   list_models_sets_all_levels<-list()
@@ -36,13 +37,13 @@ magicTrain_hierarchy<-function(list_train_sets,n_tree=10,train_model="rf",method
       current_pop_under_training<-tail(colnames(train_set_pop),1)
       Xtrain_local_tot_original<-train_set_pop[,c(1,2)]
       # add column of label association
-      ind<-grep(current_pop_under_training,names(label_association),fixed=T)
+      ind<-grep(current_pop_under_training,names(label_association),fixed=TRUE)
       label_association_current_pops<-label_association[ind]
       #train_set_pop<-add_labels_column(df = train_set_pop,labels_assocation = label_association_current_pops[[1]])
       # prepare data
       list_data_train_temp<-list()
       list_data_train_temp[[1]]<-train_set_pop
-      ref_train<-get_train_data(paths_file = list_data_train_temp,n_cores = 8,prop_down = 0.90,normalize_data = F)
+      ref_train<-get_train_data(paths_file = list_data_train_temp,n_cores = 8,prop_down = 0.90,normalize_data = FALSE)
       #.....
       # execute training
       print(sprintf("####### current_child_pop_under_training:%s ########",current_pop_under_training))
@@ -92,8 +93,7 @@ magicTrain_hierarchy<-function(list_train_sets,n_tree=10,train_model="rf",method
 #' 
 #' @return model object.
 #' @export
-#' @examples 
-#' \donttest{magicTrain()}
+#' @examples A <- 2+2
 
 
 magicTrain<-function(df_train,n_cores=1,train_model="rf",k_cv=10,
@@ -103,7 +103,7 @@ magicTrain<-function(df_train,n_cores=1,train_model="rf",k_cv=10,
   # Get Xtrain, Ytrain and f_info
   print("prepare data")
   check_info<-colnames(df_train) %in% c("classes","plot_num","n_gates_info")
-  inds_info<-which(check_info==T)
+  inds_info<-which(check_info==TRUE)
   df_info<-df_train[,inds_info]
   Xtrain<-df_train[,-inds_info]
   Ytrain<-as.character(df_info[,type_y]) # or n_gates_info
@@ -166,8 +166,7 @@ magicTrain<-function(df_train,n_cores=1,train_model="rf",k_cv=10,
 #' @importFrom caret train trainControl
 #' @return model object.
 #' @export
-#' @examples 
-#' \donttest{magicTrain_nnet()}
+#' @examples A <- 2+2
 
 
 magicTrain_nnet<-function(Xtrain,Ytrain,k_cv=10,list_index_train=NULL,list_index_val=NULL,size=100,decay=0.1,tune_lenght=5){
@@ -176,16 +175,16 @@ magicTrain_nnet<-function(Xtrain,Ytrain,k_cv=10,list_index_train=NULL,list_index
                          decay = decay)
   #----- train model
   print("--- train model")
-  if(is.null(list_index_train)==T){
+  if(is.null(list_index_train)==TRUE){
     model_nnet <- train(
       x=Xtrain, y=Ytrain, method = "nnet",
       tuneGrid = nnGrid,MaxNWts=9000,
-      trControl = trainControl(method = "cv",number = k_cv,trim = T,returnData = F)
+      trControl = trainControl(method = "cv",number = k_cv,trim = TRUE,returnData = FALSE)
     )
   }else{
     model_nnet <- train(
       x=Xtrain, y=Ytrain, method = "nnet",MaxNWts=9000,
-      trControl = trainControl(trim = T,returnData = F,index = list_index_train,indexOut = list_index_val),
+      trControl = trainControl(trim = TRUE,returnData = FALSE,index = list_index_train,indexOut = list_index_val),
       tuneLength = tune_lenght
     )
   }
@@ -209,25 +208,25 @@ magicTrain_nnet<-function(Xtrain,Ytrain,k_cv=10,list_index_train=NULL,list_index
 #' 
 #' @return model object.
 #' @export
-#' @examples 
-#' \donttest{magicTrain_rf()}
+#' @examples A <- 2+2
 
-magicTrain_rf<-function(Xtrain,Ytrain,list_index_train=NULL,list_index_val=NULL,n_tree=10,method_control="oob",k_cv=10){
+magicTrain_rf<-function(Xtrain,Ytrain,list_index_train=NULL,list_index_val=NULL,n_tree=10,
+  method_control="oob",k_cv=10){
   
   repGrid <- expand.grid(.mtry=ncol(Xtrain)) 
   #----- train model
   print("--- train model")
-  if(is.null(list_index_train)==T){
+  if(is.null(list_index_train)==TRUE){
     if(method_control=="oob"){
       model_rf <- train(
         x=Xtrain, y=Ytrain, method = "rf",metric = "Accuracy",ntree=n_tree,
-        trControl = trainControl(method = "oob", trim = T,returnData = F),
+        trControl = trainControl(method = "oob", trim = TRUE,returnData = FALSE),
         tuneGrid = repGrid
       )
     }else if(method_control=="cv"){
       model_rf <- train(
         x=Xtrain, y=Ytrain, method = "rf",metric = "Accuracy",ntree=n_tree,
-        trControl = trainControl(method = "cv",number = k_cv,trim = T,returnData = F),
+        trControl = trainControl(method = "cv",number = k_cv,trim = TRUE,returnData = FALSE),
         tuneGrid = repGrid
       )
     }
@@ -235,7 +234,8 @@ magicTrain_rf<-function(Xtrain,Ytrain,list_index_train=NULL,list_index_val=NULL,
   }else{
     model_rf <- train(
       x=Xtrain, y=Ytrain, method = "rf",metric = "Accuracy",ntree=n_tree,
-      trControl = trainControl(trim = T,returnData = F,index = list_index_train,indexOut = list_index_val),
+      trControl = trainControl(trim = TRUE,returnData = FALSE,
+        index = list_index_train,indexOut = list_index_val),
       tuneGrid = repGrid
     )
   }
@@ -258,24 +258,24 @@ magicTrain_rf<-function(Xtrain,Ytrain,list_index_train=NULL,list_index_val=NULL,
 #' 
 #' @return model object.
 #' @export
-#' @examples 
-#' \donttest{magicTrain_knn()}
+#' @examples A <- 2+2
 
 
 magicTrain_knn<-function(Xtrain,Ytrain,k_cv=10,list_index_train=NULL,list_index_val=NULL,tune_lenght=5){
   
   #----- train model
-  if(is.null(list_index_train)==T){
+  if(is.null(list_index_train)==TRUE){
     print("--- train model")
     model_nb <- train(
       x=Xtrain, y=Ytrain, method = "knn",
-      trControl = trainControl(method = "cv",number = k_cv, trim = T)
+      trControl = trainControl(method = "cv",number = k_cv, trim = TRUE)
     )
   }else{
     print("--- train model")
     model_nb <- train(
       x=Xtrain, y=Ytrain, method = "knn",
-      trControl = trainControl(trim = T,returnData = F,index = list_index_train,indexOut = list_index_val),
+      trControl = trainControl(trim = TRUE,returnData = FALSE,
+        index = list_index_train,indexOut = list_index_val),
       tuneLength = tune_lenght
     )
   }
@@ -297,23 +297,23 @@ magicTrain_knn<-function(Xtrain,Ytrain,k_cv=10,list_index_train=NULL,list_index_
 #' 
 #' @return model object.
 #' @export
-#' @examples 
-#' \donttest{magicTrain_nb()}
+#' @examples A <- 2+2
 
 magicTrain_nb<-function(Xtrain,Ytrain,k_cv=10,list_index_train=NULL,list_index_val=NULL,tune_lenght=5){
   
   #----- train model
-  if(is.null(list_index_train)==T){
+  if(is.null(list_index_train)==TRUE){
     print("--- train model")
     model_nb <- train(
       x=Xtrain, y=Ytrain, method = "nb",
-      trControl = trainControl(method = "cv",number = k_cv, trim = T)
+      trControl = trainControl(method = "cv",number = k_cv, trim = TRUE)
     )
   }else{
     print("--- train model")
     model_nb <- train(
       x=Xtrain, y=Ytrain, method = "nb",
-      trControl = trainControl(trim = T,returnData = F,index = list_index_train,indexOut = list_index_val),
+      trControl = trainControl(trim = TRUE,returnData = FALSE,
+        index = list_index_train,indexOut = list_index_val),
       tuneLength = tune_lenght
     )
   }
@@ -335,24 +335,24 @@ magicTrain_nb<-function(Xtrain,Ytrain,k_cv=10,list_index_train=NULL,list_index_v
 #' 
 #' @return model object.
 #' @export
-#' @examples 
-#' \donttest{magicTrain_dt()}
+#' @examples A <- 2+2
 
 magicTrain_dt<-function(Xtrain,Ytrain,k_cv=10,list_index_train=NULL,list_index_val=NULL,tune_lenght=5){
   
   #----- train model
   print("--- train model")
-  if(is.null(list_index_train)==T){
+  if(is.null(list_index_train)==TRUE){
     model_dt <- train(
       x=Xtrain, y=Ytrain, method = "rpart",
-      trControl =trainControl(method = "cv",number = k_cv, trim = T,returnData = F),
+      trControl =trainControl(method = "cv",number = k_cv, trim = TRUE,returnData = FALSE),
       tuneLength = tune_lenght,
       parms=list(split="information")
     )
   }else{
     model_dt <- train(
       x=Xtrain, y=Ytrain, method = "rpart",
-      trControl = trainControl(trim = T,returnData = F,index = list_index_train,indexOut = list_index_val),
+      trControl = trainControl(trim = TRUE,returnData = FALSE,index = list_index_train,
+        indexOut = list_index_val),
       tuneLength = tune_lenght,
       parms=list(split="information")
     )

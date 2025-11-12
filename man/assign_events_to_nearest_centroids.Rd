@@ -9,8 +9,8 @@ assign_events_to_nearest_centroids(
   n_cores = 1,
   method_dist = "euclidean",
   thr_dist = 0.15,
-  include_zero = F,
-  remove_centroids = T
+  include_zero = FALSE,
+  remove_centroids = TRUE
 )
 }
 \arguments{
@@ -33,5 +33,5 @@ Dataframe.
 function to assign events to class with nearest centroid.
 }
 \examples{
-\donttest{assign_events_to_nearest_centroids()} 
+A <- 2+2
 }

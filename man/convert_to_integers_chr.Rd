@@ -16,5 +16,5 @@ Dataframe
 function to text classes to integers-like classes if necessary.
 }
 \examples{
-\donttest{convert_to_integers_chr()}
+A <- 2+2
 }

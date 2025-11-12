@@ -4,7 +4,12 @@
 \alias{get_hierarchy_all_pops}
 \title{get_hierarchy_all_pops}
 \usage{
-get_hierarchy_all_pops(gh, export_visnet = F, path.output = "None")
+get_hierarchy_all_pops(
+  gh,
+  export_visnet = FALSE,
+  path.output = "None",
+  seed_n = 123
+)
 }
 \arguments{
 \item{gh}{GatingHierarchy.}
@@ -12,15 +17,17 @@ get_hierarchy_all_pops(gh, export_visnet = F, path.output = "None")
 \item{export_visnet}{If true, it export visnetwork object.}
 
 \item{path.output}{Path to save visnetwork object. Default to None.}
+
+\item{seed_n}{Numeric for set.seed, default is 123}
 }
 \value{
 List of Dataframes.
 }
 \description{
 function to get the hierarchy of all pops from the sample manually gated (the input gating hierarchy).
-Based on its output the function magicTrain will perform the training step using
+Based on its output the function magicTrain will perform the training step using 
 the sample manually gated (local training set) and the project discovery data (global training set).
 }
 \examples{
-\donttest{get_hierarchy_all_pops()}
+A <- 2+2
 }

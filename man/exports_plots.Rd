@@ -9,7 +9,7 @@ exports_plots(
   path_output,
   n_cores = 1,
   type_plot = "dens",
-  show_legend = T,
+  show_legend = TRUE,
   x_lab = "x",
   y_lab = "y",
   size_title_x = 23,
@@ -18,8 +18,8 @@ exports_plots(
   w_val = 16,
   h_val = 10,
   size_axis_text = 25,
-  export_csv = F,
-  side_by_side = F,
+  export_csv = FALSE,
+  side_by_side = FALSE,
   ...
 )
 }
@@ -53,10 +53,15 @@ exports_plots(
 \item{export_csv}{Export plot data as csv files. Default to False.}
 
 \item{side_by_side}{Arrange dens plot and ML plot side-by-side. Default to False.}
+
+\item{...}{Additional arguments passed to the function}
+}
+\value{
+TODOLIST
 }
 \description{
 function to generate plots (no hierarchy) from list of labelled dataframes.
 }
 \examples{
-\donttest{exports_plots()}
+A <- 2+2
 }

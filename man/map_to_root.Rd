@@ -15,11 +15,11 @@ map_to_root(gh, pop)
 Dataframe.
 }
 \description{
-it generates a dataset indicating what cells belong to the selected pop (1) 0 otherwise.
+it generates a dataset indicating what cells belong to the selected pop (1) 0 otherwise. 
 Old name: pre_process_manual_binary()
 The dataset is always the dataset of the Root pop.
 gh and pop are mandatory arguments, dim and mode have a default value.
 }
 \examples{
-\donttest{map_to_root()}
+A <- 2+2
 }

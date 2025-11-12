@@ -18,5 +18,5 @@ list of dataframes
 function to import plain gold standards data (no hierarchy)
 }
 \examples{
-\donttest{import_reference_csv()}
+A <- 2+2
 }

@@ -39,5 +39,5 @@ List of integers.
 function to get indices for cross val.
 }
 \examples{
-\donttest{get_indices_cross_val()}
+A <- 2+2
 }

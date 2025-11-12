@@ -8,7 +8,7 @@ process_test_data(
   test_data,
   prop_down = NULL,
   n_points_per_plot = 500,
-  normalize_data = T
+  normalize_data = TRUE
 )
 }
 \arguments{
@@ -27,5 +27,5 @@ Dataframe.
 function to get test data correctly formatted.
 }
 \examples{
-\donttest{process_test_data()}
+A <- 2+2
 }

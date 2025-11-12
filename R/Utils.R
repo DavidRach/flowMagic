@@ -1,3 +1,8 @@
+utils::globalVariables(c(
+  "classes", "classes_legend", "gh_sample_gated", "group", "group_gate",
+  "identifier", "label_x", "label_y", "pre_process_manual_binary",
+  "sprint", "subsetting_binary_df", "x", "y"
+))
 
 #' get_pops_hierarchy_list
 #' 
@@ -5,8 +10,7 @@
 #' @param hierarchical_list list of populations names for each level.
 #' @return Vector of characters.
 #' @export
-#' @examples 
-#' \donttest{get_pops_hierarchy_list()}
+#' @examples A <- 2+2
 
 get_pops_hierarchy_list<-function(hierarchical_list){
   all_levels<-names(hierarchical_list)
@@ -27,12 +31,11 @@ get_pops_hierarchy_list<-function(hierarchical_list){
 #' @param pop_selected Population name.
 #' @return Element of a list.
 #' @export
-#' @examples 
-#' \donttest{get_slot_hierarchy_list()}
+#' @examples A <- 2+2
 
 get_slot_hierarchy_list<-function(hierarchical_list,pop_selected){
   vec_levelxpops<-get_pops_hierarchy_list(hierarchical_list)
-  ind<-grep(pop_selected,vec_levelxpops,fixed = T)
+  ind<-grep(pop_selected,vec_levelxpops,fixed = TRUE)
   if(length(ind)>1){
     vec_pops<-c()
     for(element in vec_levelxpops){
@@ -40,7 +43,7 @@ get_slot_hierarchy_list<-function(hierarchical_list,pop_selected){
       pop_name<-strsplitted[2]
       vec_pops<-c(vec_pops,pop_name)
     }
-    ind<-which((vec_pops %in% pop_selected) ==T)
+    ind<-which((vec_pops %in% pop_selected) ==TRUE)
   }
   if(length(ind)>1){
     stop("multiple matches for the pop_selected")
@@ -63,18 +66,18 @@ get_slot_hierarchy_list<-function(hierarchical_list,pop_selected){
 #' @param loc_df Dataframe with bivariate marker expression.
 #' @param show_plot show density comparison. Default to none.
 #' @param nboot Number of permutations. Default to 50.
+#' @param seed_n Set seed. Default to 123.
 #' 
 #' @importFrom stats density
 #' @importFrom sm sm.density.compare
 #' 
 #' @return List of p-values.
 #' @export
-#' @examples 
-#' \donttest{get_distance_loc_vs_test()}
+#' @examples A <- 2+2
 
 
-get_distance_loc_vs_test<-function(test_df,loc_df,show_plot="none",nboot=50){
-  set.seed(123)
+get_distance_loc_vs_test<-function(test_df,loc_df,show_plot="none",nboot=50, seed_n=123){
+  set.seed(seed_n)
   # get markers expression for test and train
   marker_1_expr_test<-test_df[,1]
   marker_2_expr_test<-test_df[,2]
@@ -113,8 +116,7 @@ get_distance_loc_vs_test<-function(test_df,loc_df,show_plot="none",nboot=50){
 #' 
 #' @return Vector of numbers.
 #' @export
-#' @examples 
-#' \donttest{get_weights_density_features()}
+#' @examples A <- 2+2
 
 
 get_weights_density_features<-function(df_scores){
@@ -138,8 +140,7 @@ get_weights_density_features<-function(df_scores){
 #' @param select_density_features Select features to use. Default to NULL.
 #' @return Matrix of numbers.
 #' @export
-#' @examples 
-#' \donttest{get_density_scores()}
+#' @examples A <- 2+2
 
 
 get_density_scores<-function(df_template,df_test,select_density_features=NULL){
@@ -154,14 +155,14 @@ get_density_scores<-function(df_template,df_test,select_density_features=NULL){
   
   colnames(df_template)<-c("x1_expr","x2_expr")
   colnames(df_test)<-c("x1_expr","x2_expr")
-  df_dens_template<-csv_to_dens(df = df_template,with_classes = F,n_coord = 50)
-  df_dens_test<-csv_to_dens(df = df_test,with_classes = F,n_coord = 50)
+  df_dens_template<-csv_to_dens(df = df_template,with_classes = FALSE,n_coord = 50)
+  df_dens_test<-csv_to_dens(df = df_test,with_classes = FALSE,n_coord = 50)
   
   vec_info_dens_template<-get_density_features(df_dens = df_dens_template)
   vec_info_dens_test<-get_density_features(df_dens = df_dens_test)
   matrix_scores<-rbind(vec_info_dens_template,vec_info_dens_test)
   colnames(matrix_scores)<-names_dens_features
-  if(is.null(select_density_features)==F){
+  if(is.null(select_density_features)==FALSE){
     matrix_scores<-matrix_scores[,select_density_features]
   }
   return(matrix_scores)
@@ -178,8 +179,7 @@ get_density_scores<-function(df_template,df_test,select_density_features=NULL){
 #' 
 #' @return Number.
 #' @export
-#' @examples 
-#' \donttest{get_dist_template()}
+#' @examples A <- 2+2
 
 get_dist_template<-function(matrix_scores,dist_method="euclidean"){
   dist_score<-dist(matrix_scores,method = dist_method)
@@ -199,8 +199,7 @@ get_dist_template<-function(matrix_scores,dist_method="euclidean"){
 #' 
 #' @return Vector of numbers.
 #' @export
-#' @examples 
-#' \donttest{get_density_features()}
+#' @examples A <- 2+2
 
 get_density_features<-function(df_dens,min_height=0.06){
   density_m1<-df_dens[,1]
@@ -211,7 +210,7 @@ get_density_features<-function(df_dens,min_height=0.06){
   # features first density
   matrix_peaks_m1<-findpeaks(density_m1,minpeakheight = min_height,minpeakdistance = 5)
   if(nrow(matrix_peaks_m1)>1){
-    matrix_peaks_m1<-matrix_peaks_m1[order(matrix_peaks_m1[,2],decreasing = F),]
+    matrix_peaks_m1<-matrix_peaks_m1[order(matrix_peaks_m1[,2],decreasing = FALSE),]
   }
   #print(matrix_peaks_m1)
   n_peaks_m1<-nrow(matrix_peaks_m1)
@@ -236,7 +235,7 @@ get_density_features<-function(df_dens,min_height=0.06){
   # features second density
   matrix_peaks_m2<-findpeaks(density_m2,minpeakheight = min_height,minpeakdistance = 5)
   if(nrow(matrix_peaks_m2)>1){
-    matrix_peaks_m2<-matrix_peaks_m2[order(matrix_peaks_m2[,2],decreasing = F),]
+    matrix_peaks_m2<-matrix_peaks_m2[order(matrix_peaks_m2[,2],decreasing = FALSE),]
   }
   #print(matrix_peaks_m2)
   
@@ -278,29 +277,28 @@ get_density_features<-function(df_dens,min_height=0.06){
 #' 
 #' @return Dataframe.
 #' @export
-#' @examples 
-#' \donttest{csv_to_dens()}
+#' @examples A <- 2+2
 
-csv_to_dens<-function(df,with_classes=T,n_coord="df",normalize_data=T){
+csv_to_dens<-function(df,with_classes=TRUE,n_coord="df",normalize_data=TRUE){
 
-  if(with_classes==T){
+  if(with_classes==TRUE){
       x1_expr<-df[,1]
       x1density<-(density(df[,1],n=nrow(df)))$y # density of x1 marker expression
       x2_expr<-df[,2]
       x2density<-(density(df[,2],n=nrow(df)))$y # density of x2 marker expression
       classes<- df[,3] 
-      if(normalize_data==T){
+      if(normalize_data==TRUE){
         x1_expr<-range01(x1_expr)
         x2_expr<-range01(x2_expr)
       }
       new_df<-as.data.frame(cbind(x1_expr,x1density,x2_expr,x2density,classes))
-  }else if(with_classes==F){
+  }else if(with_classes==FALSE){
     if(n_coord=="df"){
       x1_expr<-df[,1]
       x1density<-(density(df[,1],n=nrow(df)))$y # density of x1 marker expression
       x2_expr<-df[,2]
       x2density<-(density(df[,2],n=nrow(df)))$y # density of x2 marker expression
-      if(normalize_data==T){
+      if(normalize_data==TRUE){
         x1_expr<-range01(x1_expr)
         x2_expr<-range01(x2_expr)
       }
@@ -322,8 +320,7 @@ csv_to_dens<-function(df,with_classes=T,n_coord="df",normalize_data=T){
 #' @param original_df Original dataframe.
 #' @return Dataframe.
 #' @export
-#' @examples 
-#' \donttest{get_classes_expr_df()}
+#' @examples A <- 2+2
 
 
 get_classes_expr_df<-function(dens_df,original_df){
@@ -365,8 +362,7 @@ get_classes_expr_df<-function(dens_df,original_df){
 #' @param labels_assocation Vector of label association.
 #' @return Dataframe.
 #' @export
-#' @examples 
-#' \donttest{add_labels_column()}
+#' @examples A <- 2+2
 
 
 add_labels_column<-function(df,labels_assocation){
@@ -386,8 +382,7 @@ add_labels_column<-function(df,labels_assocation){
 #' @param df Dataframe.
 #' @return Vector.
 #' @export
-#' @examples 
-#' \donttest{update_label_association()}
+#' @examples A <- 2+2
 
 update_label_association<-function(df){
   all_labels<-unique(df$labels)
@@ -408,8 +403,7 @@ update_label_association<-function(df){
 #' @param x Vector of numbers to scale.
 #' @return Vector of numbers.
 #' @export
-#' @examples 
-#' \donttest{range01()}
+#' @examples A <- 2+2
 
 range01 <- function(x){(x-min(x))/(max(x)-min(x))}
 
@@ -429,8 +423,7 @@ range01 <- function(x){(x-min(x))/(max(x)-min(x))}
 #' 
 #' @return List of integers.
 #' @export
-#' @examples 
-#' \donttest{get_indices_cross_val()}
+#' @examples A <- 2+2
 
 get_indices_cross_val<-function(df_train,n_cores=1,train_inds="plot_num",val_inds="none",n_train_plots=5,
                                 n_folds=5,seed=40,n_val_plots=5){
@@ -597,10 +590,9 @@ get_indices_cross_val<-function(df_train,n_cores=1,train_inds="plot_num",val_ind
 #' 
 #' @return Dataframe.
 #' @export
-#' @examples 
-#' \donttest{process_test_data()}
+#' @examples A <- 2+2
 
-process_test_data<-function(test_data,prop_down=NULL,n_points_per_plot=500,normalize_data=T){
+process_test_data<-function(test_data,prop_down=NULL,n_points_per_plot=500,normalize_data=TRUE){
   names_dens_features<-c("n_peaks_m1","h_peak_m1_1","pos_peak_m1_1","start_peak_m1_1","end_peak_m1_1",
                          "h_peak_m1_2","pos_peak_m1_2","start_peak_m1_2","end_peak_m1_2",
                          "h_peak_m1_3","pos_peak_m1_3","start_peak_m1_3","end_peak_m1_3",
@@ -613,7 +605,7 @@ process_test_data<-function(test_data,prop_down=NULL,n_points_per_plot=500,norma
   test_data$classes<-rep("0",nrow(test_data))
 
   # downsample
-  if(is.null(prop_down)==T){
+  if(is.null(prop_down)==TRUE){
       if(n_points_per_plot>nrow(test_data)){
        prop_down<-1
       }else{
@@ -625,14 +617,14 @@ process_test_data<-function(test_data,prop_down=NULL,n_points_per_plot=500,norma
   Xtest<-test_data[inds_new_df,c(1,2)]
 
   # get density features
-  if(normalize_data==T){
+  if(normalize_data==TRUE){
     Xtest[,1]<-range01(Xtest[,1])
     Xtest[,2]<-range01(Xtest[,2])
   }
   Xtest[,1]<-round(Xtest[,1],2)
   Xtest[,2]<-round(Xtest[,2],2)
-  df_dens<-csv_to_dens(df = Xtest,with_classes = F,n_coord = 50,normalize_data = normalize_data)
-  if(normalize_data==F){
+  df_dens<-csv_to_dens(df = Xtest,with_classes = FALSE,n_coord = 50,normalize_data = normalize_data)
+  if(normalize_data==FALSE){
     vec_info_dens<-get_density_features(df_dens = df_dens,min_height = 0.00)
   }else{
     vec_info_dens<-get_density_features(df_dens = df_dens)
@@ -655,8 +647,7 @@ process_test_data<-function(test_data,prop_down=NULL,n_points_per_plot=500,norma
 #' 
 #' @return List.
 #' @export
-#' @examples 
-#' \donttest{get_list_df_gated_plots()}
+#' @examples A <- 2+2
 
 get_list_df_gated_plots<-function(gs,gate_name){
   list_gated_data <- list()
@@ -691,8 +682,7 @@ get_list_df_gated_plots<-function(gs,gate_name){
 #' 
 #' @return List.
 #' @export
-#' @examples 
-#' \donttest{get_flowframe_from_gs()}
+#' @examples A <- 2+2
 
 get_flowframe_from_gs<-function(gs,node_name,sample_id){
   # Get flowFrame
@@ -727,8 +717,7 @@ get_flowframe_from_gs<-function(gs,node_name,sample_id){
 #' @param label_pol  Label for current polygon.
 #' @return Dataframe
 #' @export
-#' @examples 
-#' \donttest{magic_label_rectangle()}
+#' @examples A <- 2+2
 
 magic_label_rectangle<-function(df,x_min,x_max,y_min,y_max,label_pol="1"){
   # Initialize class column if it doesn't exist
@@ -750,8 +739,7 @@ magic_label_rectangle<-function(df,x_min,x_max,y_min,y_max,label_pol="1"){
 #' 
 #' @return Dataframe
 #' @export
-#' @examples 
-#' \donttest{magic_label_poly()}
+#' @examples A <- 2+2
 
 magic_label_poly<-function(df,polygon_df,label_pol="1"){
   # Initialize class column if it doesn't exist
@@ -777,8 +765,7 @@ magic_label_poly<-function(df,polygon_df,label_pol="1"){
 #' 
 #' @return list
 #' @export
-#' @examples 
-#' \donttest{flowmagic_pred_to_poly_gates()}
+#' @examples A <- 2+2
 
 flowmagic_pred_to_poly_gates<-function(list_df,pred_label,gate_label,n_cores=1,concavity_val=10){
   start <- Sys.time()
@@ -823,8 +810,7 @@ flowmagic_pred_to_poly_gates<-function(list_df,pred_label,gate_label,n_cores=1,c
 #' 
 #' @return GatingSet
 #' @export
-#' @examples 
-#' \donttest{flowmagic_pred_to_gs()}
+#' @examples A <- 2+2
 
 flowmagic_pred_to_gs<-function(list_poly_gates,gs,parent_node){
   all_names<-names(list_poly_gates)
@@ -851,8 +837,7 @@ flowmagic_pred_to_gs<-function(list_poly_gates,gs,parent_node){
 #' 
 #' @return Dataframe
 #' @export
-#' @examples 
-#' \donttest{convert_to_integers_chr()}
+#' @examples A <- 2+2
 
 convert_to_integers_chr<-function(df){
   classes<-df[,3]

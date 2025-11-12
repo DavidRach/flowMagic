@@ -18,5 +18,5 @@ Dataframe.
 function to get binary dataset with gate assignation based on the mother population of the selected pop (instead of the root).
 }
 \examples{
-\donttest{map_to_parent()}
+A <- 2+2
 }

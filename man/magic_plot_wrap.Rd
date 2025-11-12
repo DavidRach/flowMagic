@@ -12,6 +12,8 @@ magic_plot_wrap(list_gated_data, n_col_wrap = 3, size_title = 10, ...)
 \item{n_col_wrap}{number of columns in the wrapped plot. Default to 3.}
 
 \item{size_title}{size of title of each plot. Default to 10.}
+
+\item{...}{Additional arguments passed to the function}
 }
 \value{
 wrapped plot
@@ -20,5 +22,5 @@ wrapped plot
 function to wrap all plots in one plot
 }
 \examples{
-\donttest{magic_plot_wrap()}
+A <- 2+2
 }

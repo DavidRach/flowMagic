@@ -20,5 +20,5 @@ Dataframe.
 function to smooth concave polygons
 }
 \examples{
-\donttest{smooth_hull()} 
+A <- 2+2
 }

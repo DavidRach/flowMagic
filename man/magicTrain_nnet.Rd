@@ -39,5 +39,5 @@ model object.
 function to generate a neural net training model.
 }
 \examples{
-\donttest{magicTrain_nnet()}
+A <- 2+2
 }

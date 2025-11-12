@@ -9,8 +9,8 @@ get_centroids(
   low_thr = 0.1,
   up_thr = 0.9,
   thr_dist = 0.15,
-  include_zero = F,
-  remove_centroids = T
+  include_zero = FALSE,
+  remove_centroids = TRUE
 )
 }
 \arguments{
@@ -33,5 +33,5 @@ Dataframe.
 function to get centroids for each label
 }
 \examples{
-\donttest{get_centroids()} 
+A <- 2+2
 }

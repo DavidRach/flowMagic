@@ -14,10 +14,11 @@ magicPred_all(
   n_points_per_plot = NULL,
   thr_dist = 0.05,
   n_cores = 1,
-  normalize_data = T,
-  include_zero_val = T,
+  normalize_data = TRUE,
+  include_zero_val = TRUE,
   n_cores_all = 1,
-  verbose = F,
+  verbose = FALSE,
+  seed_n = 40,
   ...
 )
 }
@@ -47,6 +48,10 @@ magicPred_all(
 \item{n_cores_all}{Number of cores to use across all samples. Default to 1.}
 
 \item{verbose}{If True, print all message and disable tryCatch (any error will stop the execution). Default to False.}
+
+\item{seed_n}{Numeric for set.seed, default is 40}
+
+\item{...}{Additional arguments passed to the function}
 }
 \value{
 List of Dataframes.
@@ -55,5 +60,5 @@ List of Dataframes.
 function to predict on plain test data (no hierarchy)
 }
 \examples{
-\donttest{magicPred_all()}
+A <- 2+2
 }

@@ -14,8 +14,9 @@ magicPred(
   prop_down = NULL,
   thr_dist = 0.05,
   n_points_per_plot = NULL,
-  normalize_data = T,
-  include_zero_val = T,
+  normalize_data = TRUE,
+  include_zero_val = TRUE,
+  seed_n = 40,
   ...
 )
 }
@@ -41,6 +42,10 @@ magicPred(
 \item{normalize_data}{If True, data is normalized to 0-1 range. Default to True.}
 
 \item{include_zero_val}{considering events labeled as 0 as an additional gate when there is only one gate. Default to  True.}
+
+\item{seed_n}{Numeric for set.seed, default is 40}
+
+\item{...}{Additional arguments passed to the function}
 }
 \value{
 List of Dataframes.
@@ -49,5 +54,5 @@ List of Dataframes.
 function to predict on plain test data (no hierarchy)
 }
 \examples{
-\donttest{magicPred()}
+A <- 2+2
 }

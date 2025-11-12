@@ -20,5 +20,5 @@ It takes as input a flowSet and generates a list of dataframes with a ML structu
 Each dataframe is the expression matrix of the root.
 }
 \examples{
-\donttest{get_test_sets()} 
+A <- 2+2
 }

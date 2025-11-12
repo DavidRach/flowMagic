@@ -9,8 +9,16 @@
 To learn more about using the flowMagic package, please start by browsing the
 vignettes:
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://davidrach.github.io/flowMagic/}
+  \item Report bugs at \url{https://github.com/semontante/flowMagic/issues}
+}
+
+}
 \author{
-\strong{Maintainer}: Sebastiano Montante \email{semont93@gmail.com}
+\strong{Maintainer}: Sebastiano Montante \email{semont93@gmail.com} (\href{https://orcid.org/0000-0002-6717-8706}{ORCID})
 
 }
 \keyword{internal}

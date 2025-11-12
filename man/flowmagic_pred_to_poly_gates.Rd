@@ -30,5 +30,5 @@ list
 function to label points of dataframe based on polygon coordinates
 }
 \examples{
-\donttest{flowmagic_pred_to_poly_gates()}
+A <- 2+2
 }

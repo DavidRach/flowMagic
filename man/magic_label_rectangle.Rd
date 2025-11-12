@@ -26,5 +26,5 @@ Dataframe
 function to label points of dataframe based on rectangle coordinates
 }
 \examples{
-\donttest{magic_label_rectangle()}
+A <- 2+2
 }

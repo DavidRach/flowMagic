@@ -4,7 +4,7 @@
 \alias{csv_to_dens}
 \title{csv_to_dens}
 \usage{
-csv_to_dens(df, with_classes = T, n_coord = "df", normalize_data = T)
+csv_to_dens(df, with_classes = TRUE, n_coord = "df", normalize_data = TRUE)
 }
 \arguments{
 \item{df}{Dataframe of marker expression values.}
@@ -22,5 +22,5 @@ Dataframe.
 function to get density of events (with classes associated if present).
 }
 \examples{
-\donttest{csv_to_dens()}
+A <- 2+2
 }

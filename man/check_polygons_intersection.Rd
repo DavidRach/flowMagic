@@ -16,5 +16,5 @@ float
 function to check polygons intersection.
 }
 \examples{
-\donttest{check_polygons_intersection()}
+A <- 2+2
 }

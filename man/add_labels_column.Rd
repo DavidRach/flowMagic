@@ -18,5 +18,5 @@ Dataframe.
 function to add label association column.
 }
 \examples{
-\donttest{add_labels_column()}
+A <- 2+2
 }

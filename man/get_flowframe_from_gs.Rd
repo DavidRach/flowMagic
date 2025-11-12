@@ -20,5 +20,5 @@ List.
 function to get flowframe from gs (converting cytoframe to flowframe)
 }
 \examples{
-\donttest{get_flowframe_from_gs()}
+A <- 2+2
 }

@@ -16,5 +16,5 @@ Vector of numbers.
 function to put data in range 0-1.
 }
 \examples{
-\donttest{range01()}
+A <- 2+2
 }

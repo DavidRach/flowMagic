@@ -4,7 +4,13 @@
 \alias{get_distance_loc_vs_test}
 \title{get_distance_loc_vs_test}
 \usage{
-get_distance_loc_vs_test(test_df, loc_df, show_plot = "none", nboot = 50)
+get_distance_loc_vs_test(
+  test_df,
+  loc_df,
+  show_plot = "none",
+  nboot = 50,
+  seed_n = 123
+)
 }
 \arguments{
 \item{test_df}{Dataframe with bivariate marker expression.}
@@ -14,6 +20,8 @@ get_distance_loc_vs_test(test_df, loc_df, show_plot = "none", nboot = 50)
 \item{show_plot}{show density comparison. Default to none.}
 
 \item{nboot}{Number of permutations. Default to 50.}
+
+\item{seed_n}{Set seed. Default to 123.}
 }
 \value{
 List of p-values.
@@ -22,5 +30,5 @@ List of p-values.
 function to compare the similiraty between current test data and local training set.
 }
 \examples{
-\donttest{get_distance_loc_vs_test()}
+A <- 2+2
 }

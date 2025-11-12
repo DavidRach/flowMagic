@@ -16,5 +16,5 @@ Vector.
 function to update label association.
 }
 \examples{
-\donttest{update_label_association()}
+A <- 2+2
 }

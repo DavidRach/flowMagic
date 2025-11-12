@@ -12,8 +12,7 @@
 #' 
 #' @return List of Dataframes.
 #' @export
-#' @examples 
-#' \donttest{magicPred_hierarchy()}
+#' @examples A <- 2+2
 
 
 magicPred_hierarchy<-function(list_test_sets,list_models_local,df_tree,n_cores=1){
@@ -43,14 +42,14 @@ magicPred_hierarchy<-function(list_test_sets,list_models_local,df_tree,n_cores=1
           print("multiclass pop")
           # check hierarchy position of the pops
           logic<-df_tree$Children %in% stringsplitted
-          inds<-which(logic==T)
+          inds<-which(logic==TRUE)
           mother_current_pop<-df_tree$Mother[inds]
           mother_current_pop<-unique(mother_current_pop)
         }else if(length(stringsplitted)==1){
           print("binary pop")
           # check hierarchy position of this pop
           logic<-df_tree$Children %in% stringsplitted
-          ind<-which(logic==T)
+          ind<-which(logic==TRUE)
           mother_current_pop<-df_tree$Mother[ind]
         }
         print(sprintf("mother current pop to gate:%s",mother_current_pop))
@@ -72,7 +71,7 @@ magicPred_hierarchy<-function(list_test_sets,list_models_local,df_tree,n_cores=1
           print("----- get associated test mother df with correct dims ------")
           out<-get_slot_hierarchy_list(list_temp_gated_data_all_dims,mother_current_pop)
           df_containing_mother<-out[[1]]
-          if(is.character(df_containing_mother)==T){
+          if(is.character(df_containing_mother)==TRUE){
             print("Mother pop is None. Hierarchy is broken. No Xtest")
             Xtest<-"none_mother"
           }else{
@@ -80,7 +79,7 @@ magicPred_hierarchy<-function(list_test_sets,list_models_local,df_tree,n_cores=1
             print("all labels association selected df")
             label_assoc<-label_assoc[[1]]
             print(label_assoc)
-            ind<-grep(mother_current_pop,label_assoc,fixed=T)
+            ind<-grep(mother_current_pop,label_assoc,fixed=TRUE)
             label_assoc<-label_assoc[ind]
             print("selected label association:")
             print(label_assoc)
@@ -101,10 +100,10 @@ magicPred_hierarchy<-function(list_test_sets,list_models_local,df_tree,n_cores=1
         ########################## check number of points in test mother df ##############################
         print("######### check number of points in test mother df (Xtest) ######### ")
         n_points<-nrow(Xtest)
-        if(is.null(n_points)==T){
+        if(is.null(n_points)==TRUE){
           warning("mother is None. Hierarchy is broken for this sample.")
-          check_1<-F
-          check_2<-F
+          check_1<-FALSE
+          check_2<-FALSE
           ####### report results in lists ###########
           print("------ report results ----------")
           gated_data_current_pop_all_dims<-"None"
@@ -117,8 +116,8 @@ magicPred_hierarchy<-function(list_test_sets,list_models_local,df_tree,n_cores=1
           list_temp_gated_data_all_dims_level[[pop]]<-list(gated_data_current_pop_all_dims,label_set)
         }else if(n_points<3){ # not enough points to make a gate (min 2)
           warning("mother df contains less than 3 points. No gate calculable")
-          check_1<-F
-          check_2<-F
+          check_1<-FALSE
+          check_2<-FALSE
           ####### report results in lists ###########
           print("------ report results ----------")
           gated_data_current_pop_all_dims<-"None"
@@ -134,7 +133,7 @@ magicPred_hierarchy<-function(list_test_sets,list_models_local,df_tree,n_cores=1
           reference_model_local<-model_current_pops_to_gate$ref_model_info
           print("----- predicting gates -----")
           out_pred<-magicPred(test_data = Xtest,ref_model_info=reference_model_local,n_cores=1,
-                              prop_down=0.9,thr_dist=0.05,normalize_data=F)
+                              prop_down=0.9,thr_dist=0.05,normalize_data=FALSE)
           final_df<-out_pred$test_data_original
           ######## generate gated df current pop ######################
           print("------ generating gated data current pop -----")
@@ -186,25 +185,27 @@ magicPred_hierarchy<-function(list_test_sets,list_models_local,df_tree,n_cores=1
 #' @param normalize_data If True, data is normalized to 0-1 range. Default to True.
 #' @param include_zero_val considering events labeled as 0 as an additional gate when there is only one gate. Default to  True.
 #' @param thr_dist TODOLIST
+#' @param seed_n Numeric for set.seed, default is 40
+#' @param ... Additional arguments passed to the function
 #' 
 #' @return List of Dataframes.
 #' @export
-#' @examples 
-#' \donttest{magicPred()}
+#' @examples A <- 2+2
 
 
-magicPred<-function(test_data,magic_model=NULL,magic_model_n_gates=NULL,ref_model_info=NULL,n_cores=1,ref_data_train=NULL,
-                    prop_down=NULL,thr_dist=0.05,n_points_per_plot=NULL,normalize_data=T,include_zero_val=T,...){
-  set.seed(40)
+magicPred<-function(test_data,magic_model=NULL,magic_model_n_gates=NULL,ref_model_info=NULL,n_cores=1,
+  ref_data_train=NULL, prop_down=NULL,thr_dist=0.05,n_points_per_plot=NULL,normalize_data=TRUE,
+  include_zero_val=TRUE, seed_n=40, ...){
+  set.seed(seed_n)
   start<-Sys.time()
   if(ncol(test_data)>2){
     stop("only 2 columns must be present in data to gate")
   }
   # --------- prepare test data -------------
   message("----- prepare test data -------")
-  if(is.null(ref_model_info)==F && is.null(prop_down)==T && is.null(n_points_per_plot)==T){
+  if(is.null(ref_model_info)==FALSE && is.null(prop_down)==TRUE && is.null(n_points_per_plot)==TRUE){
     prop_down<-1
-  }else if(is.null(ref_model_info)==T  && is.null(prop_down)==T && is.null(n_points_per_plot)==T){
+  }else if(is.null(ref_model_info)==TRUE  && is.null(prop_down)==TRUE && is.null(n_points_per_plot)==TRUE){
     n_points_per_plot<-500
   }
   Xtest<-process_test_data(test_data = test_data,prop_down = prop_down,n_points_per_plot = n_points_per_plot,
@@ -212,9 +213,9 @@ magicPred<-function(test_data,magic_model=NULL,magic_model_n_gates=NULL,ref_mode
   #show(magicPlot(Xtest[,c(1,2)],type = "no_gate",size_points = 2))
   #---------- get predictions based on provided model ------------
   message("---------- get predictions based on provided model ------------")
-  if(is.null(magic_model)==F && is.null(ref_model_info)==T){
-    if(is.null(magic_model_n_gates)==F){
-      if(is.list(magic_model)==F){
+  if(is.null(magic_model)==FALSE && is.null(ref_model_info)==TRUE){
+    if(is.null(magic_model_n_gates)==FALSE){
+      if(is.list(magic_model)==FALSE){
         stop("List of magic models required.")
       }
       message("Using list of general models and n_gates model")
@@ -233,7 +234,7 @@ magicPred<-function(test_data,magic_model=NULL,magic_model_n_gates=NULL,ref_mode
       magic_model_selected<-magic_model[[max_gate]]
       classes<-caret::predict.train(magic_model_selected,Xtest)
       vec_dist<-0
-    }else if(is.null(magic_model_n_gates)==T){
+    }else if(is.null(magic_model_n_gates)==TRUE){
       message("Using general purpose model")
       #---- only  PD models predictions
       classes<-caret::predict.train(magic_model,Xtest)
@@ -241,17 +242,17 @@ magicPred<-function(test_data,magic_model=NULL,magic_model_n_gates=NULL,ref_mode
       vec_dist<-0
     }
     
-  }else if(is.null(ref_model_info)==F){
+  }else if(is.null(ref_model_info)==FALSE){
     message("Using template model")
     #---- only reference predictions
     classes<-caret::predict.train(ref_model_info,Xtest)
     # get distance templates - test data
-    if(is.null(ref_data_train)==F){
+    if(is.null(ref_data_train)==FALSE){
       all_plot_num<-unique(ref_data_train$plot_num)
       list_scores_ref<-lapply(1:length(all_plot_num),function(i){
         ref_data_train_plot_num_i<-ref_data_train[which(ref_data_train$plot_num==all_plot_num[i]),]
         check_col<-colnames(ref_data_train_plot_num_i) %in% c("x1_expr","x2_expr","classes","plot_num","n_gates_info")
-        inds<-which(check_col==T)
+        inds<-which(check_col==TRUE)
         vec_scores<-ref_data_train_plot_num_i[1,-inds]
         return(vec_scores)
       })
@@ -273,14 +274,14 @@ magicPred<-function(test_data,magic_model=NULL,magic_model_n_gates=NULL,ref_mode
   all_classes<-unique(final_df$classes)
   all_classes<-all_classes[all_classes!="0"]
   if(length(all_classes)!=0){
-    if(is.null(ref_model_info)==T){
+    if(is.null(ref_model_info)==TRUE){
       # ------- no template model ---------
       if(length(all_classes)==1){
         final_df<-post_process_gates(gated_df=final_df,n_cores=n_cores,include_zero = include_zero_val,thr_dist = thr_dist,
                                        type="dist",...)
         
       }else{
-        final_df<-post_process_gates(gated_df=final_df,n_cores=n_cores,include_zero = F,thr_dist = thr_dist,type="dist",...)
+        final_df<-post_process_gates(gated_df=final_df,n_cores=n_cores,include_zero = FALSE,thr_dist = thr_dist,type="dist",...)
       }
     }else{
       # ------- Yes template model ---------
@@ -289,7 +290,7 @@ magicPred<-function(test_data,magic_model=NULL,magic_model_n_gates=NULL,ref_mode
         final_df<-post_process_gates(gated_df=final_df,n_cores=n_cores,type = "polygon",normalize_data = normalize_data,...)
       }else{
       message("Yes template model with more than 4 polygons")
-        final_df<-post_process_gates(gated_df=final_df,n_cores=n_cores,include_zero = F,thr_dist = thr_dist,type="dist",...)
+        final_df<-post_process_gates(gated_df=final_df,n_cores=n_cores,include_zero = FALSE,thr_dist = thr_dist,type="dist",...)
       }
     }
   }
@@ -302,8 +303,8 @@ magicPred<-function(test_data,magic_model=NULL,magic_model_n_gates=NULL,ref_mode
   message("------ compute gates ------")
   test_data_temp<-test_data
   test_data_temp$classes<-rep("0",nrow(test_data_temp))
-  if(is.null(list_df_hull)==F){
-    if(normalize_data==T){
+  if(is.null(list_df_hull)==FALSE){
+    if(normalize_data==TRUE){
       test_data_temp[,1]<-range01(test_data_temp[,1])
       test_data_temp[,2]<-range01(test_data_temp[,2])
     }
@@ -345,21 +346,23 @@ magicPred<-function(test_data,magic_model=NULL,magic_model_n_gates=NULL,ref_mode
 #' @param verbose If True, print all message and disable tryCatch (any error will stop the execution). Default to False.
 #' @param prop_down TODOLIST
 #' @param thr_dist TODOLIST
+#' @param seed_n Numeric for set.seed, default is 40
+#' @param ... Additional arguments passed to the function
 #' 
 #' @importFrom parallel mclapply
 #' 
 #' @return List of Dataframes.
 #' @export
-#' @examples 
-#' \donttest{magicPred_all()}
+#' @examples A <- 2+2
 
 magicPred_all<-function(list_test_data,magic_model=NULL,ref_model_info=NULL,magic_model_n_gates=NULL,
                         ref_data_train=NULL,prop_down=NULL,n_points_per_plot=NULL,
-                        thr_dist=0.05,n_cores=1,normalize_data=T,include_zero_val=T,n_cores_all=1,verbose=F,...){
-  if (("package:dplyr" %in% search())==F) {
+                        thr_dist=0.05,n_cores=1,normalize_data=TRUE,include_zero_val=TRUE,
+                        n_cores_all=1,verbose=FALSE, seed_n=40, ...){
+  if (("package:dplyr" %in% search())==FALSE) {
   #library(dplyr)
   }                      
-  set.seed(40)
+  set.seed(seed_n)
   start<-Sys.time()
   all_names_test_data<-names(list_test_data)
   # prediction for each test data
@@ -367,7 +370,7 @@ magicPred_all<-function(list_test_data,magic_model=NULL,ref_model_info=NULL,magi
   list_all_dfs_pred<-mclapply(1:length(list_test_data),function(i){
     message(sprintf("########### %s ##########",all_names_test_data[i]))
     df_test<-list_test_data[[i]]
-    if(verbose==T){
+    if(verbose==TRUE){
     out_pred<-magicPred(test_data = df_test,magic_model=magic_model,
                                             ref_model_info=ref_model_info,n_cores=n_cores,
                                             ref_data_train=ref_data_train,prop_down=prop_down,thr_dist=thr_dist,
@@ -383,7 +386,7 @@ magicPred_all<-function(list_test_data,magic_model=NULL,ref_model_info=NULL,magi
 
     
     
-    if(is.null(out_pred)==F){
+    if(is.null(out_pred)==FALSE){
       df_test_original<-out_pred$test_data_original
       final_df<-out_pred$final_df
       vec_dist<-out_pred$vec_dist

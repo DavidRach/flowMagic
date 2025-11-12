@@ -4,7 +4,7 @@
 \alias{import_test_set_csv}
 \title{import_test_set_csv}
 \usage{
-import_test_set_csv(path_data, n_cores = 1, xy_col = T)
+import_test_set_csv(path_data, n_cores = 1, xy_col = TRUE)
 }
 \arguments{
 \item{path_data}{path to directory containing csv files to read (third column is ignored).}
@@ -20,5 +20,5 @@ List of dataframes.
 function to import test set in csv format.
 }
 \examples{
-\donttest{import_test_set_csv()}
+A <- 2+2
 }

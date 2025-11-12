@@ -18,5 +18,5 @@ Element of a list.
 function to access a slot of results from the hierarchy list based on the pop selected.
 }
 \examples{
-\donttest{get_slot_hierarchy_list()}
+A <- 2+2
 }

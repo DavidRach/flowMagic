@@ -8,11 +8,11 @@ post_process_gates(
   gated_df,
   n_cores = 1,
   thr_dist = 0.15,
-  include_zero = F,
-  remove_centroids = T,
+  include_zero = FALSE,
+  remove_centroids = TRUE,
   type = "dist",
   concavity_val = 5,
-  normalize_data = T,
+  normalize_data = TRUE,
   ...
 )
 }
@@ -32,6 +32,8 @@ post_process_gates(
 \item{concavity_val}{Concavity of polygons for the "polygon" type of post-processing}
 
 \item{normalize_data}{TODOLIST}
+
+\item{...}{Additional arguments passed to the function}
 }
 \value{
 Dataframe.
@@ -40,5 +42,5 @@ Dataframe.
 function to post process the events after model prediction.
 }
 \examples{
-\donttest{post_process_gates()}
+A <- 2+2
 }

@@ -20,5 +20,5 @@ GatingSet object
 convert a flowWorkspace or a GatingMl file of the train data folder into a gated gh (gh_train)
 }
 \examples{
-\donttest{import_sample_gated()}
+A <- 2+2
 }

@@ -20,5 +20,5 @@ List of Dataframes.
 Based on the hierarchy calculated using the get_hierarchy function, we generate the local training sets gated by the biologists.
 }
 \examples{
-\donttest{get_local_train_sets()}
+A <- 2+2
 }

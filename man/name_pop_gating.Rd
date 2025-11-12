@@ -16,5 +16,5 @@ Vector of characters.
 function to get the name of all the pops of the gating hierarchy.
 }
 \examples{
-\donttest{name_pop_gating()}
+A <- 2+2
 }

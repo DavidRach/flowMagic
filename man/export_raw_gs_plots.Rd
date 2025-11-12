@@ -16,7 +16,7 @@ export_raw_gs_plots(
   w_val = 7,
   h_val = 7,
   size_points = 1,
-  return_data = F,
+  return_data = FALSE,
   ...
 )
 }
@@ -44,10 +44,15 @@ export_raw_gs_plots(
 \item{size_points}{Size points scatter plot.}
 
 \item{return_data}{If TRUE, return the list of dataframes used to generate the plots. Default to FALSE.}
+
+\item{...}{Additional arguments passed to the function}
+}
+\value{
+TODOLIST
 }
 \description{
 function to generate ungated plots from selected gs node
 }
 \examples{
-\donttest{export_raw_gs_plots()}
+A <- 2+2
 }

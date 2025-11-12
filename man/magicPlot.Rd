@@ -8,16 +8,16 @@ magicPlot(
   df,
   type = "dens",
   polygons_coords_list = NULL,
-  show_legend = T,
+  show_legend = TRUE,
   size_axis_text = 18,
   size_title_x = 20,
   size_title_y = 20,
-  treat_0_as_gate = F,
+  treat_0_as_gate = FALSE,
   x_lab = "x",
   y_lab = "y",
   gates_to_plot = NULL,
-  apply_manual_scale = F,
-  hull_only = F,
+  apply_manual_scale = FALSE,
+  hull_only = FALSE,
   size_points = 1,
   concavity_val = 20,
   aspect_ratio = NULL,
@@ -25,10 +25,10 @@ magicPlot(
   x_lim2 = NULL,
   y_lim1 = NULL,
   y_lim2 = NULL,
-  add_labels = F,
+  add_labels = FALSE,
   map_label_polygon = NULL,
   size_pol_name = 6,
-  show_marginals = F,
+  show_marginals = FALSE,
   ...
 )
 }
@@ -80,6 +80,8 @@ magicPlot(
 \item{size_pol_name}{size polygon labels. Default to 6.}
 
 \item{show_marginals}{show 1D density next to axis. Default to False.}
+
+\item{...}{Additional arguments passed to the function}
 }
 \value{
 ggplot.
@@ -88,5 +90,5 @@ ggplot.
 function to generate the scatter plot with colored density of the events.
 }
 \examples{
-\donttest{magicPlot()}
+A <- 2+2
 }

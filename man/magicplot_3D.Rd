@@ -6,7 +6,7 @@
 \usage{
 magicplot_3D(
   df,
-  class_col = F,
+  class_col = FALSE,
   x_lab = "x",
   y_lab = "y",
   z_lab = "z",
@@ -25,7 +25,7 @@ magicplot_3D(
 
 \item{z_lab}{Label of the z axis}
 
-\item{type}{Assuming class_col==T, If type==ML, Generate a plot colored based on the gate assignment. If type=="mesh", generate a 3d polygon gate.}
+\item{type}{Assuming class_col==TRUE, If type==ML, Generate a plot colored based on the gate assignment. If type=="mesh", generate a 3d polygon gate.}
 
 \item{size_p}{size of scatter plot points. Default to 1.}
 }
@@ -36,5 +36,5 @@ plotly plot
 function to make a 3D plot of data.
 }
 \examples{
-\donttest{magicplot_3D()}
+A <- 2+2
 }

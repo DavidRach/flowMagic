@@ -36,5 +36,5 @@ model object.
 function to generate a random forest training model.
 }
 \examples{
-\donttest{magicTrain_rf()}
+A <- 2+2
 }

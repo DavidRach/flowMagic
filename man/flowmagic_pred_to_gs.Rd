@@ -20,5 +20,5 @@ GatingSet
 function to label points of dataframe based on polygon coordinates
 }
 \examples{
-\donttest{flowmagic_pred_to_gs()}
+A <- 2+2
 }

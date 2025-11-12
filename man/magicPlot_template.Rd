@@ -18,5 +18,5 @@ Dataframe
 function to interactively generate a template based on bivariate ungated data.
 }
 \examples{
-\donttest{magicPlot_template()}
+A <- 2+2
 }

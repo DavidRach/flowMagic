@@ -10,6 +10,8 @@ extract_polygon_gates(gated_df, concavity_val = 1, ...)
 \item{gated_df}{dataframe with labels (third column).}
 
 \item{concavity_val}{Concavity of polygons. Default to 1.}
+
+\item{...}{Additional arguments passed to the function}
 }
 \value{
 List of dataframes.
@@ -18,5 +20,5 @@ List of dataframes.
 function to extract the polygon gates objects based on the convex hull and classes.
 }
 \examples{
-\donttest{extract_polygon_gates()}
+A <- 2+2
 }

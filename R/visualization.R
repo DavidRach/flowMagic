@@ -25,6 +25,7 @@
 #' @param size_pol_name size polygon labels. Default to 6.
 #' @param show_marginals show 1D density next to axis. Default to False.
 #' @param hull_only TODOLIST
+#' @param ... Additional arguments passed to the function
 #' 
 #' @importFrom ggplot2 ggplot aes geom_point geom_polygon xlab ylab theme element_text element_blank
 #'  element_line scale_colour_manual guides guide_legend coord_fixed geom_text xlim ylim
@@ -35,15 +36,14 @@
 #' 
 #' @return ggplot.
 #' @export
-#' @examples 
-#' \donttest{magicPlot()}
+#' @examples A <- 2+2
 
-magicPlot<-function(df, type = "dens", polygons_coords_list = NULL, show_legend = T, 
+magicPlot<-function(df, type = "dens", polygons_coords_list = NULL, show_legend = TRUE, 
           size_axis_text = 18, size_title_x = 20, size_title_y = 20, 
-          treat_0_as_gate = F, x_lab = "x", y_lab = "y", gates_to_plot = NULL, 
-          apply_manual_scale = F, hull_only = F, size_points = 1, concavity_val = 20, 
+          treat_0_as_gate = FALSE, x_lab = "x", y_lab = "y", gates_to_plot = NULL, 
+          apply_manual_scale = FALSE, hull_only = FALSE, size_points = 1, concavity_val = 20, 
           aspect_ratio = NULL, x_lim1 = NULL, x_lim2 = NULL, y_lim1 = NULL, 
-          y_lim2 = NULL,add_labels=F,map_label_polygon=NULL,size_pol_name=6,show_marginals=F,...){
+          y_lim2 = NULL,add_labels=FALSE,map_label_polygon=NULL,size_pol_name=6,show_marginals=FALSE,...){
 
   if (type == "no_gate" || ncol(df) == 2) {
     colPalette <- colorRampPalette(c("blue", "turquoise", "green", "yellow", "orange", "red"))
@@ -72,7 +72,7 @@ magicPlot<-function(df, type = "dens", polygons_coords_list = NULL, show_legend 
     # Add marginal densities
     if (show_marginals == TRUE) {
       p <- ggMarginal(p, type = "density", margins = "both", 
-                               groupColour = FALSE, groupFill = F, fill="gray")
+                               groupColour = FALSE, groupFill = FALSE, fill="gray")
     }
     
     return(p)
@@ -80,15 +80,15 @@ magicPlot<-function(df, type = "dens", polygons_coords_list = NULL, show_legend 
   colnames(df) <- c("x", "y", "classes")
   # performing some modifications on the classes column based on user choice
   df$classes <- as.character(df$classes)
-  if (treat_0_as_gate == T) {
+  if (treat_0_as_gate == TRUE) {
     df$classes <- as.numeric(df$classes)
     inds <- which(df$classes == 0)
     df$classes[inds] <- max(unique(df$classes)) + 1
     df$classes <- as.character(df$classes)
   }
-  if (is.null(gates_to_plot) == F) {
+  if (is.null(gates_to_plot) == FALSE) {
     check_classes <- df$classes %in% gates_to_plot
-    inds <- which(check_classes == T)
+    inds <- which(check_classes == TRUE)
     df$classes[-inds] <- "0"
     }
   # Plotting with either "dens" or "ML" type plot
@@ -99,7 +99,7 @@ magicPlot<-function(df, type = "dens", polygons_coords_list = NULL, show_legend 
                     nbin = 200)
     df <- cbind(df, col)
     df$col <- as.character(df$col)
-    if (is.null(polygons_coords_list) == T) {
+    if (is.null(polygons_coords_list) == TRUE) {
       list_df_hull <- get_hull_all_gates(df, concavity_val = concavity_val,...)
       vec <- names(list_df_hull)
       inds <- which(vec == "0")
@@ -127,7 +127,7 @@ magicPlot<-function(df, type = "dens", polygons_coords_list = NULL, show_legend 
                                               color = "black", linewidth = 1)
     magicggplot <- magicggplot + xlab(x_lab) + ylab(y_lab)
   }else if (type == "ML") {
-    if(apply_manual_scale==T){
+    if(apply_manual_scale==TRUE){
       # check if there are real text labels (like full strings,not just numbers-like strings)
       df<-convert_to_integers_chr(df=df)
       df$classes <- as.factor(df$classes)
@@ -182,12 +182,12 @@ magicPlot<-function(df, type = "dens", polygons_coords_list = NULL, show_legend 
                                                               "cm"), legend.title = element_text(size = 20), legend.text = element_text(size = 20))
     magicggplot <- magicggplot + guides(color = guide_legend(override.aes = list(size = 10))) + 
       labs(color = "Assignment")
-    if (show_legend == F) {
+    if (show_legend == FALSE) {
       magicggplot <- magicggplot + theme(legend.position = "none")
     }
     magicggplot <- magicggplot + xlab(x_lab) + ylab(y_lab)
   }
-  if (is.null(aspect_ratio) == F) {
+  if (is.null(aspect_ratio) == FALSE) {
     magicggplot <- magicggplot + coord_fixed(ratio = aspect_ratio) + 
       theme(plot.margin = unit(c(0, 0, 0, 0), "pt"))
   }
@@ -198,8 +198,8 @@ magicPlot<-function(df, type = "dens", polygons_coords_list = NULL, show_legend 
   if (!is.null(y_lim1) && !is.null(y_lim2)) {
     magicggplot <- magicggplot + ylim(y_lim1, y_lim2)
   }
-  if(add_labels==T & type=="dens"){
-    if(is.null(map_label_polygon)==F){
+  if(add_labels==TRUE & type=="dens"){
+    if(is.null(map_label_polygon)==FALSE){
       df_hull$group_gate<-map_label_polygon[df_hull$group_gate]
     }
     label_coords <- do.call(rbind, lapply(split(df_hull, df_hull$group_gate), function(sub) {
@@ -216,7 +216,7 @@ magicPlot<-function(df, type = "dens", polygons_coords_list = NULL, show_legend 
   # Add marginal densities
   if (show_marginals == TRUE) {
     magicggplot <- ggMarginal(magicggplot, type = "density", margins = "both", 
-                             groupColour = FALSE, groupFill = F, fill="gray")
+                             groupColour = FALSE, groupFill = FALSE, fill="gray")
   }
   return(magicggplot)
 }
@@ -230,14 +230,14 @@ magicPlot<-function(df, type = "dens", polygons_coords_list = NULL, show_legend 
 #' @param list_gated_data List of dataframes composed by three columns (could be generated by the get_list_df_gated_plots() function)
 #' @param n_col_wrap number of columns in the wrapped plot. Default to 3.
 #' @param size_title size of title of each plot. Default to 10.
+#' @param ... Additional arguments passed to the function
 #' 
 #' @importFrom ggplot2 theme element_text ggtitle
 #' @importFrom patchwork wrap_plots
 #' 
 #' @return wrapped plot
 #' @export
-#' @examples 
-#' \donttest{magic_plot_wrap()}
+#' @examples A <- 2+2
 
 magic_plot_wrap<-function(list_gated_data,n_col_wrap=3,size_title=10,...){
   all_names<-names(list_gated_data)
@@ -262,7 +262,7 @@ magic_plot_wrap<-function(list_gated_data,n_col_wrap=3,size_title=10,...){
 #' @param x_lab label of the x axis
 #' @param y_lab Label of the y axis
 #' @param z_lab Label of the z axis
-#' @param type Assuming class_col==T, If type==ML, Generate a plot colored based on the gate assignment. If type=="mesh", generate a 3d polygon gate.
+#' @param type Assuming class_col==TRUE, If type==ML, Generate a plot colored based on the gate assignment. If type=="mesh", generate a 3d polygon gate.
 #' @param size_p size of scatter plot points. Default to 1.
 #' 
 #' @importFrom plotly plot_ly layout add_trace layout
@@ -271,10 +271,9 @@ magic_plot_wrap<-function(list_gated_data,n_col_wrap=3,size_title=10,...){
 #' 
 #' @return plotly plot
 #' @export
-#' @examples 
-#' \donttest{magicplot_3D()}
+#' @examples A <- 2+2
 
-magicplot_3D<-function(df,class_col=F,x_lab="x",y_lab="y",z_lab="z",type="ML",size_p=1){
+magicplot_3D<-function(df,class_col=FALSE,x_lab="x",y_lab="y",z_lab="z",type="ML",size_p=1){
   if (!requireNamespace("plotly", quietly = TRUE)) {
     stop("The 'plotly' package is required for this function. Please install it.")
   }
@@ -377,8 +376,7 @@ magicplot_3D<-function(df,class_col=F,x_lab="x",y_lab="y",z_lab="z",type="ML",si
 #' 
 #' @return Dataframe
 #' @export
-#' @examples 
-#' \donttest{magicPlot_template()}
+#' @examples A <- 2+2
 
 magicPlot_template<-function(df,size_points=1){
   colPalette <- colorRampPalette(c("blue", "turquoise", "green", "yellow", "orange", "red"))

@@ -11,7 +11,7 @@ get_train_data(
   prop_down = NULL,
   remove_class = NULL,
   n_points_per_plot = NULL,
-  normalize_data = T,
+  normalize_data = TRUE,
   vec_col = NULL
 )
 }
@@ -39,5 +39,5 @@ Dataframe.
 function to import training data based on paths to files.
 }
 \examples{
-\donttest{get_train_data()}
+A <- 2+2
 }

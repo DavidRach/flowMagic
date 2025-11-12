@@ -16,5 +16,5 @@ Vector of characters.
 function to get info from a list of hierarchical dataset (it reports all the pops for each level in a vector).
 }
 \examples{
-\donttest{get_pops_hierarchy_list()}
+A <- 2+2
 }

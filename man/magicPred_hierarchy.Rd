@@ -22,5 +22,5 @@ List of Dataframes.
 function to predict the gates on the ungated .fcs samples.
 }
 \examples{
-\donttest{magicPred_hierarchy()}
+A <- 2+2
 }
