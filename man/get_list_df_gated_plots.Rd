@@ -4,12 +4,14 @@
 \alias{get_list_df_gated_plots}
 \title{get_list_df_gated_plots}
 \usage{
-get_list_df_gated_plots(gs, gate_name)
+get_list_df_gated_plots(gs, gate_name, label_pop = NULL)
 }
 \arguments{
 \item{gs}{GatingSet}
 
 \item{gate_name}{Name of the Gating tree node whose gating data needs to be extracted.}
+
+\item{label_pop}{Set label for selected gate.}
 }
 \value{
 List.
@@ -18,6 +20,5 @@ List.
 function to get labelled dataframe based on selected node for each sample in gs.
 }
 \examples{
-\donttest{get_list_df_gated_plots()}
+A <- 2+2
 }
-\keyword{flowMagic}

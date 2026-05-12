@@ -21,6 +21,5 @@ The dataset is always the dataset of the Root pop.
 gh and pop are mandatory arguments, dim and mode have a default value.
 }
 \examples{
-\donttest{map_to_root()}
+A <- 2+2
 }
-\keyword{flowMagic}

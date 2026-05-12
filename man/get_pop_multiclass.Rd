@@ -19,6 +19,5 @@ function to get the children of the selected population,
 useful for multiclass classification. The output is only the pops with same dimensions
 }
 \examples{
-\donttest{get_pop_multiclass()}
+A <- 2+2
 }
-\keyword{flowMagic}

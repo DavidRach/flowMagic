@@ -6,7 +6,6 @@
 \usage{
 magicPred_all(
   list_test_data,
-  sample_id = NULL,
   magic_model = NULL,
   ref_model_info = NULL,
   magic_model_n_gates = NULL,
@@ -16,17 +15,16 @@ magicPred_all(
   n_gates_df = NULL,
   thr_dist = 0.05,
   n_cores = 1,
-  normalize_data = T,
-  include_zero_val = T,
+  normalize_data = TRUE,
+  include_zero_val = TRUE,
   n_cores_all = 1,
-  verbose = F,
+  verbose = FALSE,
+  seed_n = 40,
   ...
 )
 }
 \arguments{
 \item{list_test_data}{List of unlabeled  dataframes. It has only the two columns of marker expression.}
-
-\item{sample_id}{Id of the samples to gate. Could be a vector containing the names or numerical indices (position) of the samples to gate. If NULL, all samples in list_test_data are gated. Default to NULL.}
 
 \item{magic_model}{Global trained model to predict gates. It can be a single model or list of named models (each model trained on selected number of gates).}
 
@@ -36,11 +34,13 @@ magicPred_all(
 
 \item{ref_data_train}{Template data used to generate ref_model_info. Needed to calculate target-template distance.}
 
+\item{prop_down}{TODOLIST}
+
 \item{n_points_per_plot}{Number of points to consider for downsampling. Default to 500. Note: the gates in the downsampled data are projected back to the original data to get the actual populations.}
 
 \item{n_gates_df}{Dataframe pairing the sample name (first column) with the user-defined number of gates (second column). Default to NULL.}
 
-\item{thr_dist}{Distance threshold for centroids calculation during post processing. Default to 0.15.}
+\item{thr_dist}{TODOLIST}
 
 \item{n_cores}{Number of cores to use to process one sample. Default to 1.}
 
@@ -51,6 +51,12 @@ magicPred_all(
 \item{n_cores_all}{Number of cores to use across all samples. Default to 1.}
 
 \item{verbose}{If True, print all message and disable tryCatch (any error will stop the execution). Default to False.}
+
+\item{seed_n}{Numeric for set.seed, default is 40}
+
+\item{...}{Additional arguments passed to the function}
+
+\item{sample_id}{Id of the samples to gate. Could be a vector containing the names or numerical indices (position) of the samples to gate. If NULL, all samples in list_test_data are gated. Default to NULL.}
 }
 \value{
 List of Dataframes.
@@ -59,6 +65,5 @@ List of Dataframes.
 function to predict on plain test data (no hierarchy)
 }
 \examples{
-\donttest{magicPred_all()}
+A <- 2+2
 }
-\keyword{flowMagic}

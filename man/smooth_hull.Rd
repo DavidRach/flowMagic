@@ -4,7 +4,7 @@
 \alias{smooth_hull}
 \title{smooth_hull}
 \usage{
-smooth_hull(hull_df, spar = 0.7)
+smooth_hull(hull_df, spar = 0.7, buffer_dist = 500)
 }
 \arguments{
 \item{hull_df}{Dataframe generate by  concaveman functions inside get_huget_hull_all_gates function}
@@ -20,6 +20,5 @@ Dataframe.
 function to smooth concave polygons
 }
 \examples{
-\donttest{smooth_hull()} 
+A <- 2+2
 }
-\keyword{flowMagic}

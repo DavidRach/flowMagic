@@ -18,6 +18,5 @@ Number.
 function to get distance between template and test data.
 }
 \examples{
-\donttest{get_dist_template()}
+A <- 2+2
 }
-\keyword{flowMagic}
