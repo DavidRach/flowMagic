@@ -6,42 +6,51 @@ Authors@R:
     person(given = "Sebastiano",
            family = "Montante",
            role = c("aut", "cre"),
-           email = "semont93@gmail.com")
+           email = "semont93@gmail.com",
+		   comment = c(ORCID = "0000-0002-6717-8706"))
 Description: tool to perform the automated gating of bivariate flow cytometry data.
 License: Apache License 2.0 | file LICENSE + file NOTICE
 Encoding: UTF-8
+URL: https://davidrach.github.io/flowMagic/
+BugReports: https://github.com/semontante/flowMagic/issues
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports:
+	Biobase,	
 	caret,
-	ggplot2,
-	stringr,
-	parallel,
-	randomForest,
 	concaveman,
-	sp,
-	sf,
-	stats,
-	grDevices,
+	CytoML,
+    data.tree,	
 	doParallel,
-	nnet,
-	sm,
-	pracma,
-	patchwork,
-	ggExtra,
-	RColorBrewer,
-	dplyr
-Suggests:
+	dplyr,
 	flowCore,
 	flowWorkspace,
-	Biobase,
-	data.tree,
-	visNetwork,
-	klaR(<= 0.6-12),
+	geometry,
+	ggExtra,
+	ggplot2,
+	grDevices,
+	magrittr,	
+	methods,
+	parallel,
+	patchwork,
+	plotly,	
+	pracma,
+	sf,
+	sm,
+	sp,
+	stats,
+	stringr,
+	randomcoloR,
+	RColorBrewer,
+    visNetwork
+Suggests:
+    klaR,
+	knitr,
+	nnet,
+	randomForest,
 	remotes,
-	CytoML,
-	plotly,
-	magrittr,
-	geometry
-	
+    testthat (>= 3.0.0)
+biocViews: FlowCytometry, Preprocessing, Software
+Config/testthat/edition: 3
+VignetteBuilder: knitr	
