@@ -1,0 +1,120 @@
+cff-version: "1.2.0"
+
+message: >-
+If you use flowMagic in your research, please cite the associated preprint
+below and report the version of flowMagic used.
+
+type: software
+
+title: "flowMagic"
+
+abstract: >-
+flowMagic is an R package for automated gating of bivariate flow cytometry
+data. It provides machine-learning-based gating, visualization tools, and
+integration with the flowCore and flowWorkspace ecosystems.
+
+authors:
+
+family-names: "Montante"
+given-names: "Sebastiano"
+email: "semont93@gmail.com"
+
+version: "0.99"
+
+license: "Apache-2.0"
+
+repository-code: "https://github.com/semontante/flowMagic"
+
+url: "https://github.com/semontante/flowMagic"
+
+keywords:
+
+"flow cytometry"
+"automated gating"
+"machine learning"
+"bioinformatics"
+"R package"
+"citizen science"
+
+preferred-citation:
+type: article
+
+title: >-
+Citizen science gamers enable automated flow cytometry gating through
+machine learning
+
+authors:
+- family-names: "Montante"
+given-names: "Sebastiano"
+
+- family-names: "Yokosawa"
+  given-names: "Daniel"
+
+- family-names: "Li"
+  given-names: "Leon"
+
+- family-names: "Butyaev"
+  given-names: "Alexander"
+
+- family-names: "Malek"
+  given-names: "Mehrnoush"
+
+- family-names: "Movassaghi"
+  given-names: "Razzi"
+
+- family-names: "Michalchuk"
+  given-names: "Quentin"
+
+- family-names: "Hsu"
+  given-names: "Chieh-Ting Jimmy"
+
+- family-names: "Shmil"
+  given-names: "David"
+
+- family-names: "Rahim"
+  given-names: "Albina"
+
+- family-names: "Cossarizza"
+  given-names: "Andrea"
+
+- family-names: "Boira Esteban"
+  given-names: "Julia"
+
+- family-names: "Erhart"
+  given-names: "Kornél"
+
+- family-names: "Finnbogason"
+  given-names: "Bergur"
+
+- family-names: "Kelion"
+  given-names: "George"
+
+- family-names: "Leifsson"
+  given-names: "Hjalti"
+
+- family-names: "Rivers"
+  given-names: "Josh"
+
+- family-names: "Ecker"
+  given-names: "David"
+
+- family-names: "Szantner"
+  given-names: "Attila"
+
+- family-names: "Waldispühl"
+  given-names: "Jérôme"
+
+- family-names: "Brinkman"
+  given-names: "Ryan R."
+
+journal: "bioRxiv"
+
+status: preprint
+
+date-published: "2025-10-08"
+
+year: 2025
+
+doi: "10.1101/2025.10.07.679685"
+
+url: "https://www.biorxiv.org/content/10.1101/2025.10.07.679685v1"
